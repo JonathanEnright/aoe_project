@@ -26,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run linting with Black
+      - name: Run_linting_with_Black
         uses: psf/black@stable
         with:
           src: '.'
@@ -36,6 +36,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check for linting errors
-        if: steps.Run Linting.outcome == 'failure'
+        if: steps.Run_linting_with_Black.outcome == 'failure'
         run: echo "Linting errors found. Please fix and re-commit."
         continue-on-error: true 
