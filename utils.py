@@ -10,22 +10,25 @@ from jsonschema import validate, ValidationError, SchemaError
 # Functions
 # -----------------------------------------------------------------------------
 
+
 def valid_schema(source: dict, target: dict) -> str:
     """Reads a source json file against a target yaml file to validate schema is consistent."""
     try:
         validate(instance=source, schema=target)
         return True
     except (ValidationError, SchemaError) as e:
-        print(f'Schema Validation failed with error:\n{e}')
+        print(f"Schema Validation failed with error:\n{e}")
         return False
+
 
 # -----------------------------------------------------------------------------
 # Classes
 # -----------------------------------------------------------------------------
 
+
 class Config:
     def __init__(self, yaml_file: str):
-        with open(yaml_file, 'r') as f:
+        with open(yaml_file, "r") as f:
             self.__dict__.update(yaml.safe_load(f))
         self.run_date = self.parse_date(self.backdate_days_start, self.date_format)
         self.end_date = self.parse_date(self.backdate_days_end, self.date_format)
@@ -37,10 +40,10 @@ class Config:
 
 
 class ApiDownloader:
-    def __init__(self, base_url:str):
+    def __init__(self, base_url: str):
         self.base_url = base_url
 
-    def download(self, endpoint: str, output_path:str):
+    def download(self, endpoint: str, output_path: str):
         """
         Downloads the content from the specified endpoint and saves it locally.
 
@@ -53,7 +56,7 @@ class ApiDownloader:
             downloader.download('/api/db_dumps.json', 'prod/metadata.json')\n
             downloader.download(\n
                 '/media/db_dumps/date_range%3D2024-07-14_2024-07-20/matches.parquet'\n
-                ,'prod/2024-07-14_matches.parquet') 
+                ,'prod/2024-07-14_matches.parquet')
         """
 
         url = self.base_url + endpoint
@@ -65,7 +68,9 @@ class ApiDownloader:
         elif endpoint.endswith(".parquet"):
             self._save_parquet(response.content, output_path)
         else:
-            raise ValueError("Unsupported file format. Only .json and .parquet are supported.")
+            raise ValueError(
+                "Unsupported file format. Only .json and .parquet are supported."
+            )
 
     def _save_json(self, content, output_path):
         """Saves the JSON content to the specified output path."""
@@ -83,10 +88,11 @@ class ApiDownloader:
 
 
 # -----------------------------------------------------------------------------
-# Currently unused class. 
+# Currently unused class.
 # Allows filtering logic to be defined schema in yaml file.
-# Allows modulaity in data pipeline processing, however too verbose for current project. 
+# Allows modulaity in data pipeline processing, however too verbose for current project.
 # -----------------------------------------------------------------------------
+
 
 class ComparisonEvaluator:
     def __init__(self, config: Config):
@@ -103,25 +109,23 @@ class ComparisonEvaluator:
         Returns:
             bool: True if all comparisons pass, False otherwise.
         """
-        operators = {
-            ">=": op.ge,
-            "<=": op.le,
-            "==": op.eq
-        }
+        operators = {">=": op.ge, "<=": op.le, "==": op.eq}
 
-        for test in yaml_data.get('tests', []):
-            left_key_name = test['left_var']
-            operator_name = test['operator']
-            right_key_name = test['right_var']
+        for test in yaml_data.get("tests", []):
+            left_key_name = test["left_var"]
+            operator_name = test["operator"]
+            right_key_name = test["right_var"]
 
             left_key_value = json_data.get(left_key_name)
             # Get config value name, else, get the actual value
-            right_key_value = getattr(self.config, right_key_name, right_key_name) 
+            right_key_value = getattr(self.config, right_key_name, right_key_name)
 
             if left_key_value is None:
                 raise ValueError(f"Variable '{left_key_name}' not found in json data.")
             if right_key_value is None:
-                raise ValueError(f"Variable '{right_key_name}' not found in config attributes.")
+                raise ValueError(
+                    f"Variable '{right_key_name}' not found in config attributes."
+                )
 
             if operator_name not in operators:
                 raise ValueError(f"Unsupported operator: {operator_name}")
@@ -130,5 +134,3 @@ class ComparisonEvaluator:
                 return False
 
         return True
-
-    
