@@ -35,7 +35,7 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-       - name: Check for linting errors
+      - name: Check for linting errors
         if: steps.Run Linting.outcome == 'failure'
         run: echo "Linting errors found. Please fix and re-commit."
         continue-on-error: true 
