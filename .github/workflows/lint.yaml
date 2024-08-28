@@ -1,0 +1,17 @@
+name: lint_files
+
+on: push
+
+jobs:
+  lint_job:
+    name: lint code base
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run linting
+        uses: psf/black@stable
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
