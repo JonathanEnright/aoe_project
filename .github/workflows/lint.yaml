@@ -1,17 +1,41 @@
-name: lint_files
+name: Lint and Format Code
 
-on: push
+on: 
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  lint_job:
-    name: lint code base
+  lint_and_format:
+    name: Lint & Format Codebase
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Run linting
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run linting with Black
         uses: psf/black@stable
+        with:
+          src: '.'
+          options: '--check'
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+       - name: Check for linting errors
+        if: steps.Run Linting.outcome == 'failure'
+        run: echo "Linting errors found. Please fix and re-commit."
+        continue-on-error: true 

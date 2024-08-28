@@ -11,7 +11,7 @@ from jsonschema import validate, ValidationError, SchemaError
 # -----------------------------------------------------------------------------
 
 
-def valid_schema(source: dict, target: dict) -> str:
+def valid_schema(source: dict, target: dict) -> bool:
     """Reads a source json file against a target yaml file to validate schema is consistent."""
     try:
         validate(instance=source, schema=target)
