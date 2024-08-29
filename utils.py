@@ -21,7 +21,7 @@ class Config:
 
     @staticmethod
     def parse_date(backdate_days: int, date_format: str):
-        return (datetime.now() - timedelta(days=backdate_days))
+        return datetime.now() - timedelta(days=backdate_days)
 
 
 class ApiDownloader:

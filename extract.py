@@ -11,6 +11,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 # Define expected schema for db_dumps API endpoint via Pydantic models
 # ----------------------------------------------------------------------------
 class WeeklyDump(BaseModel):
@@ -27,7 +28,10 @@ class ApiSchema(BaseModel):
     db_dumps: List[WeeklyDump]
     total_matches: int
     total_players: int
+
+
 # ----------------------------------------------------------------------------
+
 
 def filter_valid_dumps(
     source_schema: ApiSchema, run_date: datetime, end_date: datetime
@@ -55,7 +59,7 @@ def download_data(
     for dump in valid_dumps:
         matches_endpoint = dump.matches_url
         players_endpoint = dump.players_url
-        dated = dump.start_date.strftime('%Y-%m-%d')
+        dated = dump.start_date.strftime("%Y-%m-%d")
 
         # Download 'matches' and 'players' parquet data with date prefix
         logger.info(f"Downloading matches for {dated} from {matches_endpoint}")
@@ -78,7 +82,7 @@ def main():
     try:
         with open(config.metadata_file, "r") as json_file:
             source_schema_json = json.load(json_file)
-        
+
         # Validate to to our pydantic 'ApiSchema' definition
         source_schema = ApiSchema.model_validate(source_schema_json)
 
