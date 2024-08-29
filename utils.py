@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 import requests
 import json
 import pathlib
-from jsonschema import validate, ValidationError, SchemaError
 
 # -----------------------------------------------------------------------------
 # Classes
@@ -16,12 +15,12 @@ class Config:
         with open(yaml_file, "r") as f:
             self.__dict__.update(yaml.safe_load(f))
         self.run_date = self.parse_date(self.backdate_days_start, self.date_format)
-        self.end_date = self.parse_date(self.backdate_days_end, self.date_format)
+        self.run_end_date = self.parse_date(self.backdate_days_end, self.date_format)
         self.db_endpoint_url = "/".join([self.base_url, self.db_endpoint])
 
     @staticmethod
     def parse_date(backdate_days: int, date_format: str):
-        return datetime.now() - timedelta(days=backdate_days)
+        return (datetime.now() - timedelta(days=backdate_days)).date()
 
 
 class ApiDownloader:
@@ -119,19 +118,3 @@ class ComparisonEvaluator:
                 return False
 
         return True
-
-
-# -----------------------------------------------------------------------------
-# Unused function
-# Replaced jsonschema validation with Pydantic 'model_validate'
-# -----------------------------------------------------------------------------
-
-
-def valid_schema(source: dict, target: dict) -> bool:
-    """Reads a source json file against a target yaml file to validate schema is consistent."""
-    try:
-        validate(instance=source, schema=target)
-        return True
-    except (ValidationError, SchemaError) as e:
-        print(f"Schema Validation failed with error:\n{e}")
-        return False

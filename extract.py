@@ -2,8 +2,8 @@ from pydantic import BaseModel, ValidationError
 from utils import Config, ApiDownloader
 import logging
 import json
-from typing import Dict, List, Any
-from datetime import datetime
+from typing import Dict, List, Any, Optional
+from datetime import date
 
 # Configure logging
 logging.basicConfig(
@@ -15,26 +15,30 @@ logger = logging.getLogger(__name__)
 # Define expected schema for db_dumps API endpoint via Pydantic models
 # ----------------------------------------------------------------------------
 class WeeklyDump(BaseModel):
-    start_date: datetime
-    end_date: datetime
+    start_date: date
+    end_date: Optional[date] = None
     num_matches: int
+    num_players: Optional[int] = None
     matches_url: str
     players_url: str
-    match_checksum: str
-    player_checksum: str
+    match_checksum: Optional[str] = None
+    player_checksum: Optional[str] = None
+
+    class AllowAdditionalProperties:
+        extra = "allow"
 
 
 class ApiSchema(BaseModel):
     db_dumps: List[WeeklyDump]
-    total_matches: int
-    total_players: int
+    total_matches: Optional[int] = None
+    total_players: Optional[int] = None
 
 
 # ----------------------------------------------------------------------------
 
 
 def filter_valid_dumps(
-    source_schema: ApiSchema, run_date: datetime, end_date: datetime
+    source_schema: ApiSchema, run_date: date, run_end_date: date
 ) -> List[WeeklyDump]:
     """Filters the database dumps based on start date and number of matches."""
     logger.info("Filtering valid database dumps based on date and match count.")
@@ -42,7 +46,7 @@ def filter_valid_dumps(
     for weekly_dump in source_schema.db_dumps:
         valid_dump = (
             weekly_dump.start_date >= run_date
-            and weekly_dump.start_date < end_date
+            and weekly_dump.start_date < run_end_date
             and weekly_dump.num_matches != 0
         )
         if valid_dump:
@@ -88,7 +92,7 @@ def main():
 
         # Filter to pull only populated files between date range
         valid_files = filter_valid_dumps(
-            source_schema, config.run_date, config.end_date
+            source_schema, config.run_date, config.run_end_date
         )
     except ValidationError as e:
         logger.error(f"Schema Validation failed with error:\n{e}")
