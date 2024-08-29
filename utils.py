@@ -7,21 +7,6 @@ import pathlib
 from jsonschema import validate, ValidationError, SchemaError
 
 # -----------------------------------------------------------------------------
-# Functions
-# -----------------------------------------------------------------------------
-
-
-def valid_schema(source: dict, target: dict) -> bool:
-    """Reads a source json file against a target yaml file to validate schema is consistent."""
-    try:
-        validate(instance=source, schema=target)
-        return True
-    except (ValidationError, SchemaError) as e:
-        print(f"Schema Validation failed with error:\n{e}")
-        return False
-
-
-# -----------------------------------------------------------------------------
 # Classes
 # -----------------------------------------------------------------------------
 
@@ -35,8 +20,8 @@ class Config:
         self.db_endpoint_url = "/".join([self.base_url, self.db_endpoint])
 
     @staticmethod
-    def parse_date(backdate_days: int, date_format: str) -> str:
-        return (datetime.now() - timedelta(days=backdate_days)).strftime(date_format)
+    def parse_date(backdate_days: int, date_format: str):
+        return (datetime.now() - timedelta(days=backdate_days))
 
 
 class ApiDownloader:
@@ -134,3 +119,19 @@ class ComparisonEvaluator:
                 return False
 
         return True
+
+
+# -----------------------------------------------------------------------------
+# Unused function
+# Replaced jsonschema validation with Pydantic 'model_validate'
+# -----------------------------------------------------------------------------
+
+
+def valid_schema(source: dict, target: dict) -> bool:
+    """Reads a source json file against a target yaml file to validate schema is consistent."""
+    try:
+        validate(instance=source, schema=target)
+        return True
+    except (ValidationError, SchemaError) as e:
+        print(f"Schema Validation failed with error:\n{e}")
+        return False

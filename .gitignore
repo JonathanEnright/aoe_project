@@ -1,3 +1,5 @@
 data
 __pycache__
 metadata.json
+todo.txt
+extract_old.py
