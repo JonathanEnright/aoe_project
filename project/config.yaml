@@ -1,5 +1,5 @@
 # parse_date params (update here for 1 time loads or backdating)
-backdate_days_start: 49
+backdate_days_start: 70
 backdate_days_end: -1
 date_format: '%Y-%m-%d'
 
@@ -8,5 +8,8 @@ base_url: https://aoestats.io
 db_endpoint: /api/db_dumps.json
 
 # File references (assuming in same directory)
-metadata_file: metadata.json
-schema_config: db_data_schema.yaml
+# metadata_file: metadata.json
+# schema_config: db_data_schema.yaml
+
+# s3 bucket
+bucket: aoe2dumps
