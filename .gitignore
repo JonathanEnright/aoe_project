@@ -4,3 +4,9 @@ metadata.json
 todo.txt
 extract_old.py
 .env
+archived_data
+.mypy_cache
+dbt_commands.txt
+my_dbt_ext_table.sql
+sf_setup.sql
+project/transform/logs

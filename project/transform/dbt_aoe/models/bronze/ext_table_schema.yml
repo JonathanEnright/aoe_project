@@ -1,0 +1,24 @@
+version: 2
+
+sources:
+  - name: aoe_ext
+    database: aoe
+    schema: landing
+    loader: S3
+    
+    tables:
+      - name: matches_ext
+        description: "External table of AOE matches, stored as parquet files"
+        external:
+          location: "@aoe.landing.s3_stage"
+          file_format: "( type = parquet )"
+          auto_refresh: true
+          pattern: ".*matches\\.parquet$"
+
+      - name: players_ext
+        description: "External table of AOE players, stored as parquet files"
+        external:
+          location: "@aoe.landing.s3_stage"
+          file_format: "( type = parquet )"
+          auto_refresh: true
+          pattern: ".*players\\.parquet$"   
