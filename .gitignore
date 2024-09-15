@@ -10,3 +10,5 @@ dbt_commands.txt
 my_dbt_ext_table.sql
 sf_setup.sql
 project/transform/logs
+relic_link_testing
+CountryList.json

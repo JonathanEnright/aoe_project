@@ -1,6 +1,6 @@
 from utils import Config
-from extract.filter import extract_metadata
-from load.loader import load_data
+from extract import fetch_relic_data
+from load import load_relic_api_data
 import logging
 
 # Configure logging
@@ -15,11 +15,11 @@ def main():
 
     # Extract phase
     logger.info("Starting data extraction.")
-    valid_dumps = extract_metadata(config)
+    relic_data = fetch_relic_data(config)
 
     # Load phase
     logger.info("Starting data loading.")
-    load_data(valid_dumps, config)
+    load_relic_api_data(relic_data, config)
 
 
 if __name__ == "__main__":

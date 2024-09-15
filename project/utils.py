@@ -32,9 +32,9 @@ class Config:
 # -----------------------------------------------------------------------------
 
 
-def fetch_api_file(base_url: str, endpoint: str):
+def fetch_api_file(base_url: str, endpoint: str, params=None):
     url = base_url + endpoint
-    response = requests.get(url)
+    response = requests.get(url, params=params)
     response.raise_for_status()
     return io.BytesIO(response.content)
 
