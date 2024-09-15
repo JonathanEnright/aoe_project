@@ -52,37 +52,37 @@ def filter_valid_dumps(
     return valid_dumps
 
 
-def fetch_relic_data(config, WAIT_SEC:int = 1) -> RelicResponse:
-    """Submit GET requests in chunks of 100 to obtain player & leaderboard data from Relic API"""   
+def fetch_relic_data(config, WAIT_SEC: int = 1) -> RelicResponse:
+    """Submit GET requests in chunks of 100 to obtain player & leaderboard data from Relic API"""
     api_url = config.relic_base_url + config.relic_endpoint
     params = config.relic_params
-    chunk_size = params['chunk_size']
-    
+    chunk_size = params["chunk_size"]
+
     combined_stat_groups = []
     combined_leaderboard_stats = []
     start = 1
 
     while True:
-        params['start'] = start
+        params["start"] = start
         response = requests.get(api_url, params=params)
         response.raise_for_status()
-        logger.info(f'processing chunk {start} ')
+        logger.info(f"processing chunk {start} ")
         time.sleep(WAIT_SEC)
-        
+
         try:
             data = response.json()
             validated_data = RelicResponse(**data)
-            
+
             # Append new data
             combined_stat_groups.extend(validated_data.statGroups)
             combined_leaderboard_stats.extend(validated_data.leaderboardStats)
-            
+
             # Check if we've reached the end of the leaderboard
             if len(validated_data.statGroups) < chunk_size:
                 break
-            
+
             start += chunk_size
-        
+
         except ValidationError as e:
             logger.info(f"Validation Error: {e}")
             break
@@ -92,7 +92,7 @@ def fetch_relic_data(config, WAIT_SEC:int = 1) -> RelicResponse:
         result=validated_data.result,
         statGroups=combined_stat_groups,
         leaderboardStats=combined_leaderboard_stats,
-        rankTotal=validated_data.rankTotal
+        rankTotal=validated_data.rankTotal,
     )
-    
+
     return relic_data

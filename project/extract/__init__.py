@@ -6,4 +6,5 @@ __all__ = [
     "WeeklyDump",
     "RelicResponse",
     "extract_db_dumps_metadata",
-    "fetch_relic_data"]
+    "fetch_relic_data",
+]

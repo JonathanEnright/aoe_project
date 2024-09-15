@@ -34,6 +34,7 @@ class RelicResult(BaseModel):
     code: int
     message: str
 
+
 class Member(BaseModel):
     profile_id: int
     name: Optional[str] = None
@@ -44,11 +45,13 @@ class Member(BaseModel):
     leaderboardregion_id: Optional[int] = None
     country: str
 
+
 class StatGroup(BaseModel):
     id: int
     name: Optional[str] = None
     type: Optional[int] = None
     members: List[Member]
+
 
 class LeaderboardStat(BaseModel):
     statgroup_id: int
@@ -68,6 +71,7 @@ class LeaderboardStat(BaseModel):
     highestrank: Optional[int] = None
     highestranklevel: Optional[int] = None
     highestrating: Optional[int] = None
+
 
 class RelicResponse(BaseModel):
     result: RelicResult
