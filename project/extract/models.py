@@ -30,11 +30,6 @@ class ApiSchema(BaseModel):
 # -----------------------------------------------------------------------------
 
 
-class RelicResult(BaseModel):
-    code: int
-    message: str
-
-
 class Member(BaseModel):
     profile_id: int
     name: Optional[str] = None
@@ -74,7 +69,5 @@ class LeaderboardStat(BaseModel):
 
 
 class RelicResponse(BaseModel):
-    result: RelicResult
     statGroups: List[StatGroup]
     leaderboardStats: List[LeaderboardStat]
-    rankTotal: Optional[int] = None

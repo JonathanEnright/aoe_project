@@ -5,6 +5,7 @@ from typing import List
 from utils import create_s3_session, upload_to_s3, fetch_api_file
 from extract import WeeklyDump, RelicResponse
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -30,15 +31,17 @@ def load_db_dumps_data(valid_dumps: List[WeeklyDump], config):
     logger.info("Data loading complete.")
 
 
-def load_relic_api_data(relic_data: RelicResponse, config):
-    """Loads relic data into s3."""
+def load_relic_api_data(relic_data_list: List[RelicResponse], config):
+    """Loads multiple relic data chunks into separate files in S3."""
     logger.info("Authenticating to S3.")
     s3 = create_s3_session()
 
-    json_data = json.dumps(
-        relic_data.model_dump(include={"statGroups", "leaderboardStats"}), indent=4
-    )
-    file_obj = io.BytesIO(json_data.encode("utf-8"))
-    upload_to_s3(s3, file_obj, config.bucket, config.relic_file_name)
+    for i, relic_data in enumerate(relic_data_list):
+        file_name = f"{config.relic_file_name}_{i+1}.json"
+        json_data = json.dumps(
+            relic_data.model_dump(include={"statGroups", "leaderboardStats"}), indent=4
+        )
+        file_obj = io.BytesIO(json_data.encode("utf-8"))
+        upload_to_s3(s3, file_obj, config.bucket, file_name)
 
     logger.info("Data loading complete.")
