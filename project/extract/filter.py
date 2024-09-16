@@ -8,6 +8,7 @@ from pydantic import ValidationError
 from utils import fetch_api_file
 from extract import ApiSchema, WeeklyDump, RelicResponse
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -52,16 +53,23 @@ def filter_valid_dumps(
     return valid_dumps
 
 
-def fetch_relic_data(config, WAIT_SEC: int = 1) -> RelicResponse:
-    """Submit GET requests in chunks of 100 to obtain player & leaderboard data from Relic API"""
+def fetch_relic_data(config, WAIT_SEC: int = 1) -> List[RelicResponse]:
+    """
+    Submit GET requests in chunks of 100 to obtain player & leaderboard data
+    from Relic API. Splits data into multiple RelicResponse objects, each
+    containing at most 5000 rows, as Snowflake cannot ingest json files > 16MB.
+    """
     api_url = config.relic_base_url + config.relic_endpoint
     params = config.relic_params
     chunk_size = params["chunk_size"]
+    max_rows_per_file = config.relic_max_rows
 
-    combined_stat_groups = []
-    combined_leaderboard_stats = []
+    # Initialise append list and Pydantic object (pre-json files)
+    all_relic_data = []
+    current_relic_data = RelicResponse(statGroups=[], leaderboardStats=[])
     start = 1
 
+    # Continue to request chunks of 100 results from API until exhausted all data
     while True:
         params["start"] = start
         response = requests.get(api_url, params=params)
@@ -73,12 +81,22 @@ def fetch_relic_data(config, WAIT_SEC: int = 1) -> RelicResponse:
             data = response.json()
             validated_data = RelicResponse(**data)
 
-            # Append new data
-            combined_stat_groups.extend(validated_data.statGroups)
-            combined_leaderboard_stats.extend(validated_data.leaderboardStats)
+            # Split data into seperate files when exceeding 5000 results
+            for group, leaderboard in zip(
+                validated_data.statGroups, validated_data.leaderboardStats
+            ):
+                current_relic_data.statGroups.append(group)
+                current_relic_data.leaderboardStats.append(leaderboard)
+                if len(current_relic_data.statGroups) >= max_rows_per_file:
+                    all_relic_data.append(current_relic_data)
+                    current_relic_data = RelicResponse(
+                        statGroups=[], leaderboardStats=[]
+                    )
 
             # Check if we've reached the end of the leaderboard
             if len(validated_data.statGroups) < chunk_size:
+                if current_relic_data.statGroups:
+                    all_relic_data.append(current_relic_data)
                 break
 
             start += chunk_size
@@ -87,12 +105,4 @@ def fetch_relic_data(config, WAIT_SEC: int = 1) -> RelicResponse:
             logger.info(f"Validation Error: {e}")
             break
 
-    # Construct the final response object
-    relic_data = RelicResponse(
-        result=validated_data.result,
-        statGroups=combined_stat_groups,
-        leaderboardStats=combined_leaderboard_stats,
-        rankTotal=validated_data.rankTotal,
-    )
-
-    return relic_data
+    return all_relic_data

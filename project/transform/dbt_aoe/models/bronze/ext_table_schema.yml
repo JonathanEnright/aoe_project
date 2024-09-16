@@ -11,7 +11,7 @@ sources:
         description: "External table of AOE matches, stored as parquet files"
         external:
           location: "@aoe.landing.s3_stage"
-          file_format: "( type = parquet )"
+          file_format: parquet_ff
           auto_refresh: true
           pattern: ".*matches\\.parquet$"
 
@@ -19,6 +19,14 @@ sources:
         description: "External table of AOE players, stored as parquet files"
         external:
           location: "@aoe.landing.s3_stage"
-          file_format: "( type = parquet )"
+          file_format: parquet_ff
           auto_refresh: true
           pattern: ".*players\\.parquet$"   
+
+      - name: relic_ext
+        description: "External table of relic API data, stored as json files"
+        external:
+          location: "@aoe.landing.s3_stage_json/rl_api"
+          file_format: json_ff
+          auto_refresh: true
+          pattern: ".*\\.json"   

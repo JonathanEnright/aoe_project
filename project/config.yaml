@@ -12,13 +12,10 @@ relic_endpoint: '/community/leaderboard/getLeaderBoard2?'
 relic_params: 
   leaderboard_id: 3
   title: age2
-  sort_by: 1
+  sort_by: 0
   chunk_size: 100 
-relic_file_name: relic.json
+relic_file_name: rl_api/relic
+relic_max_rows: 5000
 
-# File references (assuming in same directory)
-# metadata_file: metadata.json
-# schema_config: db_data_schema.yaml
-
-# s3 bucket
+# s3 bucket. Other bucket params are in .env file.
 bucket: aoe2dumps
