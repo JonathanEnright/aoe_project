@@ -22,6 +22,7 @@ WITH
         landing_data
         ,LATERAL FLATTEN(INPUT => json_col:statGroups)
     )
+    ,flattened AS (
 SELECT 
     id
     ,group_name
@@ -39,3 +40,11 @@ SELECT
 FROM
     members_stats
     ,LATERAL FLATTEN(INPUT => members)
+    )
+    ,deduplicated AS (
+        {{ deduplicate_by_key('flattened', 'profile_id', 'ldts') }}
+    )
+SELECT
+    *
+FROM
+    deduplicated

@@ -1,0 +1,40 @@
+
+version: 2
+
+models:
+  - name: leaderboards_br
+    description: "Schema of flattened leaderboard data from Relic API"
+    columns:
+      - name: statgroup_id
+        description: "The primary key for this table"
+        data_tests:
+          - unique
+          - not_null
+
+  - name: statgroup_br
+    description: "Schema of flattened player stats data from Relic API"
+    columns:
+      - name: profile_id
+        description: "The primary key for this table"
+        data_tests:
+          - unique
+          - not_null
+      - name: personal_statgroup_id
+        description: "Joining key to leaderboards table"
+
+  - name: matches_br
+    description: "Individual match data from Aoestats.io"
+    columns:
+      - name: game_id
+        description: "The primary key for this table"
+        data_tests:
+          - unique
+          - not_null
+
+  - name: players_br
+    description: "Individual player data from Aoestats.io"
+    columns:
+      - name: game_id
+        description: "Joining key for the table when combined with profile_id"
+      - name: profile_id
+        description: "Joining key for the table when combined with game_id"
