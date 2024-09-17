@@ -2,13 +2,13 @@
 
 
 WITH
-    raw_data AS (
+    landing_data AS (
     SELECT
         VALUE AS json_col
-        ,rsrc
-        ,ldts
+        ,rsrc::VARCHAR as rsrc
+        ,ldts::TIMESTAMP_NTZ(9) as ldts
     FROM
-        relic_raw   
+        {{ ref('v_relic_raw') }}    
     )
     ,members_stats AS (
     SELECT DISTINCT
@@ -19,7 +19,7 @@ WITH
         ,rsrc
         ,ldts
     FROM
-        raw_data
+        landing_data
         ,LATERAL FLATTEN(INPUT => json_col:statGroups)
     )
 SELECT 
