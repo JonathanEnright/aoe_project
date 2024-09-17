@@ -6,8 +6,8 @@ seeds:
     docs:
       show: true
       node_color: purple
-    config:
-      schema: landing
+    # config:
+    #   schema: landing
     # tests:
     #   - <test>
     columns:

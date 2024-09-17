@@ -1,5 +1,5 @@
 from utils import Config
-from extract import fetch_relic_data
+from extract import chunk_relic_data
 from load import load_relic_api_data
 import logging
 
@@ -15,7 +15,7 @@ def main():
 
     # Extract phase
     logger.info("Starting data extraction.")
-    relic_data = fetch_relic_data(config)
+    relic_data = list(chunk_relic_data(config))
 
     # Load phase
     logger.info("Starting data loading.")
