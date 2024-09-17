@@ -1,14 +1,12 @@
-{{ config(materialized='view') }}
+{{ config(materialized='table') }}
 
 
 WITH
    landing_data AS (
    SELECT 
       *
-      ,metadata$filename AS rsrc
-      ,metadata$file_last_modified AS ldts
    FROM
-      {{source('aoe_ext', 'matches_ext')}}
+      {{ ref('v_matches_raw') }}
    )
 SELECT
    value:avg_elo::DEC(38,2) AS avg_elo

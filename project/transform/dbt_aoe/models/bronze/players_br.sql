@@ -1,14 +1,12 @@
-{{ config(materialized='view') }}
+{{ config(materialized='table') }}
 
 
 WITH
    landing_data AS (
    SELECT 
       *
-      ,metadata$filename AS rsrc
-      ,metadata$file_last_modified AS ldts
    FROM
-      {{source('aoe_ext', 'players_ext')}}
+      {{ ref('v_players_raw') }}
    )
 SELECT
    value:civ::VARCHAR AS civ
