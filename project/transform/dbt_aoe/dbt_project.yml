@@ -32,5 +32,5 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   dbt_aoe:
     # Config indicated by + and applies to all files under models/example/
-    example:
+    bronze:
       +materialized: view
