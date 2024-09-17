@@ -5,6 +5,11 @@ import os
 import boto3
 from dotenv import load_dotenv
 import io
+import time
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -52,6 +57,24 @@ def create_s3_session():
 def upload_to_s3(s3, data, bucket_name, path_key):
     try:
         s3.upload_fileobj(data, bucket_name, path_key)
-        print(f"File '{path_key}' uploaded to S3 bucket '{bucket_name}' successfully!")
+        logger.info(
+            f"File '{path_key}' uploaded to S3 bucket '{bucket_name}' successfully!"
+        )
     except Exception as e:
-        print(f"Error uploading file: {e}")
+        logger.error(f"Error uploading file: {e}")
+
+
+def timer(func):
+    """A simple timer decorator to record how long a function took to run."""
+
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        logger.info(
+            f"Function '{func.__name__}' took {elapsed_time:.1f} seconds to run."
+        )
+        return result
+
+    return wrapper

@@ -1,4 +1,4 @@
-from utils import Config
+from utils import Config, timer
 from extract import chunk_relic_data
 from load import load_relic_api_data
 import logging
@@ -10,6 +10,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+@timer
 def main():
     config = Config("config.yaml")
 
