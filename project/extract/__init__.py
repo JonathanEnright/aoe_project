@@ -1,5 +1,5 @@
 from .models import ApiSchema, WeeklyDump, RelicResponse
-from .filter import extract_db_dumps_metadata, fetch_relic_data
+from .filter import extract_db_dumps_metadata, chunk_relic_data
 
 __all__ = [
     "ApiSchema",

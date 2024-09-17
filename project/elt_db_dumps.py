@@ -1,4 +1,4 @@
-from utils import Config
+from utils import Config, timer
 from extract import extract_db_dumps_metadata
 from load import load_db_dumps_data
 import logging
@@ -10,6 +10,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+@timer
 def main():
     config = Config("config.yaml")
 

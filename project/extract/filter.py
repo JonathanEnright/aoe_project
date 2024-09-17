@@ -1,13 +1,11 @@
 import json
 import logging
 import time
-import requests
-from typing import List
+from typing import List, Tuple, Generator
 from datetime import date
 from pydantic import ValidationError
 from utils import fetch_api_file
 from extract import ApiSchema, WeeklyDump, RelicResponse
-
 
 logger = logging.getLogger(__name__)
 
@@ -53,56 +51,51 @@ def filter_valid_dumps(
     return valid_dumps
 
 
-def fetch_relic_data(config, WAIT_SEC: int = 1) -> List[RelicResponse]:
+def fetch_relic_chunk(config, start: int) -> Tuple[List, List]:
     """
-    Submit GET requests in chunks of 100 to obtain player & leaderboard data
-    from Relic API. Splits data into multiple RelicResponse objects, each
-    containing at most 5000 rows, as Snowflake cannot ingest json files > 16MB.
+    Fetches a single chunk of player & leaderboard data from Relic API (limit 100/request).
     """
-    api_url = config.relic_base_url + config.relic_endpoint
     params = config.relic_params
-    chunk_size = params["chunk_size"]
-    max_rows_per_file = config.relic_max_rows
+    params["start"] = start
+    logger.info(f"processing chunk {start} ")
+    response = fetch_api_file(config.relic_base_url, config.relic_endpoint, params)
 
-    # Initialise append list and Pydantic object (pre-json files)
-    all_relic_data = []
-    current_relic_data = RelicResponse(statGroups=[], leaderboardStats=[])
+    try:
+        data = json.load(response)
+        validated_data = RelicResponse(**data)
+        return validated_data.statGroups, validated_data.leaderboardStats
+    except ValidationError as e:
+        logger.info(f"Validation Error: {e}")
+        return [], []
+
+
+def chunk_relic_data(config) -> Generator[RelicResponse, None, None]:
+    """
+    Generates RelicResponse objects, each containing at most 5000 rows of data.
+    These objects will be transformed to seperate JSON files.
+    This is necessary to overcome the 16MB VARIANT field limit in Snowflake.
+    """
+    chunk_size = config.relic_params["chunk_size"]
     start = 1
 
-    # Continue to request chunks of 100 results from API until exhausted all data
+    current_relic_data = RelicResponse(statGroups=[], leaderboardStats=[])
     while True:
-        params["start"] = start
-        response = requests.get(api_url, params=params)
-        response.raise_for_status()
-        logger.info(f"processing chunk {start} ")
-        time.sleep(WAIT_SEC)
+        stat_groups, leaderboard_stats = fetch_relic_chunk(config, start)
 
-        try:
-            data = response.json()
-            validated_data = RelicResponse(**data)
-
-            # Split data into seperate files when exceeding 5000 results
-            for group, leaderboard in zip(
-                validated_data.statGroups, validated_data.leaderboardStats
-            ):
-                current_relic_data.statGroups.append(group)
-                current_relic_data.leaderboardStats.append(leaderboard)
-                if len(current_relic_data.statGroups) >= max_rows_per_file:
-                    all_relic_data.append(current_relic_data)
-                    current_relic_data = RelicResponse(
-                        statGroups=[], leaderboardStats=[]
-                    )
-
-            # Check if we've reached the end of the leaderboard
-            if len(validated_data.statGroups) < chunk_size:
-                if current_relic_data.statGroups:
-                    all_relic_data.append(current_relic_data)
-                break
-
-            start += chunk_size
-
-        except ValidationError as e:
-            logger.info(f"Validation Error: {e}")
+        if not stat_groups:  # Empty response, likely end of data
             break
 
-    return all_relic_data
+        for group, leaderboard in zip(stat_groups, leaderboard_stats):
+            current_relic_data.statGroups.append(group)
+            current_relic_data.leaderboardStats.append(leaderboard)
+            if len(current_relic_data.statGroups) >= config.relic_max_rows:
+                yield current_relic_data
+                current_relic_data = RelicResponse(statGroups=[], leaderboardStats=[])
+
+        if len(stat_groups) < chunk_size:  # Last chunk
+            if current_relic_data.statGroups:
+                yield current_relic_data
+            break
+
+        start += chunk_size
+        time.sleep(1)
