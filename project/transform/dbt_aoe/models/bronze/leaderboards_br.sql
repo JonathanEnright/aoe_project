@@ -7,6 +7,7 @@ WITH
         VALUE AS json_col
         ,rsrc::VARCHAR as rsrc
         ,ldts::TIMESTAMP_NTZ(9) as ldts
+        ,source
     FROM
         {{ ref('v_relic_raw') }} 
     )
@@ -31,6 +32,7 @@ WITH
         ,value:wins::int as wins
         ,rsrc
         ,ldts
+        ,source
     FROM
         landing_data
         ,LATERAL FLATTEN(INPUT => json_col:leaderboardStats)

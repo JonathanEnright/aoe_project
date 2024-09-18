@@ -20,5 +20,6 @@ SELECT
    ,value:winner::BOOLEAN AS winner
    ,rsrc::VARCHAR AS rsrc
    ,ldts::TIMESTAMP_NTZ(9) AS ldts
+   ,source
 FROM
    landing_data

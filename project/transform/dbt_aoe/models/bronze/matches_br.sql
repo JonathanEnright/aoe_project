@@ -28,5 +28,6 @@ SELECT
    ,value:team_1_elo::DEC(38,2) AS team_1_elo
    ,rsrc::VARCHAR AS rsrc
    ,ldts::TIMESTAMP_NTZ(9) AS ldts
+   ,source
 FROM
    landing_data
