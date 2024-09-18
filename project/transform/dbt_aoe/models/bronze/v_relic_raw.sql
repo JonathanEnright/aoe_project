@@ -5,5 +5,6 @@ SELECT DISTINCT
    *
    ,metadata$filename AS rsrc
    ,metadata$file_last_modified AS ldts
+   ,'RELIC_LINK_API'::VARCHAR as source
 FROM
    {{ source('aoe_ext', 'relic_ext') }}
