@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: matches_sr
+    description: "Cleaned matches table filtered for 1v1RM matches only"
+    columns:
+      - name: game_duration_secs
+        data_tests:
+          - within_threshold:
+              'lower_threshold': 0
+              'upper_threshold': 10000
+              'error_lim': 10
+      - name: actual_duration_secs
+        data_tests:
+          - within_threshold:
+              'lower_threshold': 0
+              'upper_threshold': 10000
+              'error_lim': 10
+      - name: game_started_timestamp
+        data_tests:
+          - within_threshold:
+              'lower_threshold': "'2022-01-01'"
+              'upper_threshold': CURRENT_DATE
+              'error_lim': 1
+      - name: game_date
+        data_tests:
+          - within_threshold:
+              'lower_threshold': "'2022-01-01'"
+              'upper_threshold': CURRENT_DATE
+              'error_lim': 1
+
+  - name: player_leaderboard_stats_sr
+    description: "Schema of flattened player stats data from Relic API"
+    columns:
+      - name: last_match_date
+        description: "The last time the player has played"
+        data_tests:
+          - within_threshold: 
+              'lower_threshold': "'2022-01-01'"
+              'upper_threshold': CURRENT_DATE
+              'error_lim': 1
+
+  - name: player_match_sr
+    description: "pre-fact table containing mainly business keys and measures"
+    columns:
+      - name: id
+        description: "The primary key for this table"
+        data_tests:
+          - unique
+          - not_null
