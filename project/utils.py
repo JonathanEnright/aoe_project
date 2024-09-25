@@ -26,7 +26,6 @@ class Config:
             self.__dict__.update(yaml.safe_load(f))
         self.run_date = self.parse_date(self.backdate_days_start, self.date_format)
         self.run_end_date = self.parse_date(self.backdate_days_end, self.date_format)
-        self.db_endpoint_url = "/".join([self.base_url, self.db_endpoint])
 
     @staticmethod
     def parse_date(backdate_days: int, date_format: str):
