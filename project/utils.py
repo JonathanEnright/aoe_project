@@ -4,6 +4,7 @@ import requests
 import os
 import boto3
 from dotenv import load_dotenv
+from typing import Dict, Optional, BinaryIO
 import io
 import time
 import logging
@@ -25,7 +26,6 @@ class Config:
             self.__dict__.update(yaml.safe_load(f))
         self.run_date = self.parse_date(self.backdate_days_start, self.date_format)
         self.run_end_date = self.parse_date(self.backdate_days_end, self.date_format)
-        self.db_endpoint_url = "/".join([self.base_url, self.db_endpoint])
 
     @staticmethod
     def parse_date(backdate_days: int, date_format: str):
@@ -37,20 +37,30 @@ class Config:
 # -----------------------------------------------------------------------------
 
 
-def fetch_api_file(base_url: str, endpoint: str, params=None):
-    url = base_url + endpoint
-    response = requests.get(url, params=params)
-    response.raise_for_status()
-    return io.BytesIO(response.content)
+def fetch_api_file(
+    base_url: str, endpoint: str, params: Optional[Dict] = None
+) -> BinaryIO | None:
+    """Fetches a file from an API endpoint and returns it as a BytesIO object."""
+    try:
+        url = base_url + endpoint
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        content = io.BytesIO(response.content)
+        return content
+    except requests.RequestException as e:
+        logger.error(f"Error fetching data: {e}")
+        return None
 
 
-def create_s3_session():
-    s3 = boto3.client(
-        "s3",
-        aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
-        aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-        region_name=os.getenv("AWS_REGION"),
-    )
+def create_s3_session(s3=None):
+    if s3 == None:
+        logger.info("Authenticating to S3.")
+        s3 = boto3.client(
+            "s3",
+            aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
+            aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+            region_name=os.getenv("AWS_REGION"),
+        )
     return s3
 
 

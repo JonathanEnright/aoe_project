@@ -1,101 +1,83 @@
 import json
 import logging
 import time
-from typing import List, Tuple, Generator
-from datetime import date
+from typing import List, Dict
+from datetime import timedelta
 from pydantic import ValidationError
 from utils import fetch_api_file
-from extract import ApiSchema, WeeklyDump, RelicResponse
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 
 
-def extract_db_dumps_metadata(config) -> List[WeeklyDump]:
-    """Extracts valid database dumps from the API."""
-    logger.info("Downloading API metadata file.")
-    metadata_file = fetch_api_file(config.base_url, config.db_endpoint)
+def fetch_relic_chunk(base_url: str, endpoint: str, params: Dict) -> List:
+    """Fetches all data from Relic API in chunks of 100/request (API limit)"""
+    start = 1
+    response_list = []
+    while True:
+        params["start"] = start
+        logger.info(f"processing chunk {start} ")
+        response = fetch_api_file(base_url, endpoint, params)
 
+        if not response:
+            break
+        # Assume end of data if response bytes is <1KB.
+        if len(response.getvalue()) <= 1024:
+            logger.info(f"Assumed end of data reached!")
+            break
+
+        response_list.append(response)
+        start += params["chunk_size"]
+        time.sleep(1)
+    return response_list
+
+
+def validate_json_schema(content, validation_schema):
     try:
-        metadata_content = metadata_file.read()
-        source_schema_json = json.loads(metadata_content)
-
-        # Validate to our Pydantic 'ApiSchema' definition
-        source_schema = ApiSchema.model_validate(source_schema_json)
-
-        # Filter to pull only populated files between date range
-        valid_dumps = filter_valid_dumps(
-            source_schema, config.run_date, config.run_end_date
-        )
+        data = json.load(content)
+        validated_data = validation_schema.model_validate(data)
+        return validated_data
     except ValidationError as e:
-        logger.error(f"Schema validation failed with error:\n{e}")
+        logger.error(f"Validation Error: {e}")
         return []
 
-    return valid_dumps
+
+def validate_parquet_schema(content, validation_schema):
+    df = pd.read_parquet(content)
+    records = df.to_dict(orient="records")
+    for record in records:
+        try:
+            validation_schema.model_validate(record)
+        except ValidationError as e:
+            logger.error("Validation error:", e)
+
+    # Reset the pointer to start of file:
+    content.seek(0)
+    return content
 
 
-def filter_valid_dumps(
-    source_schema: ApiSchema, run_date: date, run_end_date: date
-) -> List[WeeklyDump]:
-    """Filters the database dumps based on start date and number of matches."""
-    logger.info("Filtering valid database dumps based on date and match count.")
-    valid_dumps = []
-    for weekly_dump in source_schema.db_dumps:
-        valid_dump = (
-            weekly_dump.start_date >= run_date
-            and weekly_dump.start_date < run_end_date
-            and weekly_dump.num_matches != 0
-        )
-        if valid_dump:
-            valid_dumps.append(weekly_dump)
-    logger.info(f"Found {len(valid_dumps)} valid dumps.")
-    return valid_dumps
+def generate_weekly_queries(start_date, end_date):
+    sunday_start = start_date - timedelta(days=start_date.weekday() + 1)
+    saturday_end = end_date + timedelta(days=(5 - end_date.weekday() + 7) % 7)
+
+    queries = []
+    current = sunday_start
+    logger.info(f"Finding all files between {sunday_start} and {saturday_end}.")
+    while current <= saturday_end:
+        week_end = current + timedelta(days=6)
+        query = f"{current.strftime('%Y-%m-%d')}_{week_end.strftime('%Y-%m-%d')}"
+        result = {"dated": current, "query_str": query}
+        queries.append(result)
+        current += timedelta(days=7)
+
+    return queries
 
 
-def fetch_relic_chunk(config, start: int) -> Tuple[List, List]:
-    """
-    Fetches a single chunk of player & leaderboard data from Relic API (limit 100/request).
-    """
-    params = config.relic_params
-    params["start"] = start
-    logger.info(f"processing chunk {start} ")
-    response = fetch_api_file(config.relic_base_url, config.relic_endpoint, params)
-
-    try:
-        data = json.load(response)
-        validated_data = RelicResponse(**data)
-        return validated_data.statGroups, validated_data.leaderboardStats
-    except ValidationError as e:
-        logger.info(f"Validation Error: {e}")
-        return [], []
-
-
-def chunk_relic_data(config) -> Generator[RelicResponse, None, None]:
-    """
-    Generates RelicResponse objects, each containing at most 5000 rows of data.
-    These objects will be transformed to seperate JSON files.
-    This is necessary to overcome the 16MB VARIANT field limit in Snowflake.
-    """
-    chunk_size = config.relic_params["chunk_size"]
-    start = 1
-
-    current_relic_data = RelicResponse(statGroups=[], leaderboardStats=[])
-    while True:
-        stat_groups, leaderboard_stats = fetch_relic_chunk(config, start)
-
-        if not stat_groups:  # Empty response, likely end of data
-            break
-
-        for group, leaderboard in zip(stat_groups, leaderboard_stats):
-            current_relic_data.statGroups.append(group)
-            current_relic_data.leaderboardStats.append(leaderboard)
-            if len(current_relic_data.statGroups) >= config.relic_max_rows:
-                yield current_relic_data
-                current_relic_data = RelicResponse(statGroups=[], leaderboardStats=[])
-
-        if len(stat_groups) < chunk_size:  # Last chunk
-            if current_relic_data.statGroups:
-                yield current_relic_data
-            break
-
-        start += chunk_size
-        time.sleep(1)
+def create_stats_endpoints(extract_file: str, weekly_querys: list):
+    endpoints = []
+    for weekly_query in weekly_querys:
+        result_query = f"{weekly_query['query_str']}/{extract_file}"
+        result_dated = f"{weekly_query['dated']}_{extract_file}"
+        endpoints.append({"file_date": result_dated, "endpoint_str": result_query})
+    logger.info(f"{len(endpoints)} found.")
+    return endpoints

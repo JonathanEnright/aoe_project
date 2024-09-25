@@ -1,6 +1,7 @@
 from utils import Config, timer
-from extract import chunk_relic_data
-from load import load_relic_api_data
+from extract import validate_json_schema, fetch_relic_chunk
+from extract import RelicResponse
+from load import load_json_data
 import logging
 
 # Configure logging
@@ -14,13 +15,28 @@ logger = logging.getLogger(__name__)
 def main():
     config = Config("config.yaml")
 
+    # Setup:
+    s3 = None
+    _base_url = config.relic_base_url
+    _endpoint = config.relic_endpoint
+    _params = config.relic_params
+    _validation_schema = RelicResponse
+    _output_prefix = config.relic_file_name
+    _s3_bucket = config.bucket
+
     # Extract phase
     logger.info("Starting data extraction.")
-    relic_data = list(chunk_relic_data(config))
+    content_chunk = fetch_relic_chunk(_base_url, _endpoint, _params)
 
-    # Load phase
-    logger.info("Starting data loading.")
-    load_relic_api_data(relic_data, config)
+    for i, content in enumerate(content_chunk):
+        file_name_prefix = f"{_output_prefix}_{i+1}"
+
+        # Validate phase
+        validated_data = validate_json_schema(content, _validation_schema)
+
+        # Load phase
+        s3 = load_json_data(validated_data, file_name_prefix, _s3_bucket, s3)
+        logger.info(f"{i+1}/{len(content_chunk)} loaded.")
 
 
 if __name__ == "__main__":

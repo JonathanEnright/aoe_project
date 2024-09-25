@@ -1,10 +1,21 @@
-from .models import ApiSchema, WeeklyDump, RelicResponse
-from .filter import extract_db_dumps_metadata, chunk_relic_data
+from .models import ApiSchema, WeeklyDump, RelicResponse, Matches, Players
+from .filter import (
+    validate_json_schema,
+    generate_weekly_queries,
+    create_stats_endpoints,
+    validate_parquet_schema,
+    fetch_relic_chunk,
+)
 
 __all__ = [
     "ApiSchema",
     "WeeklyDump",
+    "Matches",
+    "Players",
     "RelicResponse",
-    "extract_db_dumps_metadata",
-    "fetch_relic_data",
+    "validate_json_schema",
+    "generate_weekly_queries",
+    "create_stats_endpoints",
+    "validate_parquet_schema",
+    "fetch_relic_chunk",
 ]
