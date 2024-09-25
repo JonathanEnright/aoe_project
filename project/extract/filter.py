@@ -18,7 +18,7 @@ def fetch_relic_chunk(base_url: str, endpoint: str, params: Dict) -> List:
         params["start"] = start
         logger.info(f"processing chunk {start} ")
         response = fetch_api_file(base_url, endpoint, params)
-        
+
         if not response:
             break
         # Assume end of data if response bytes is <1KB.
@@ -44,16 +44,17 @@ def validate_json_schema(content, validation_schema):
 
 def validate_parquet_schema(content, validation_schema):
     df = pd.read_parquet(content)
-    records = df.to_dict(orient='records')
+    records = df.to_dict(orient="records")
     for record in records:
         try:
             validation_schema.model_validate(record)
         except ValidationError as e:
             logger.error("Validation error:", e)
-    
+
     # Reset the pointer to start of file:
     content.seek(0)
-    return content    
+    return content
+
 
 def generate_weekly_queries(start_date, end_date):
     sunday_start = start_date - timedelta(days=start_date.weekday() + 1)
@@ -65,18 +66,18 @@ def generate_weekly_queries(start_date, end_date):
     while current <= saturday_end:
         week_end = current + timedelta(days=6)
         query = f"{current.strftime('%Y-%m-%d')}_{week_end.strftime('%Y-%m-%d')}"
-        result = {'dated': current, 'query_str': query}
+        result = {"dated": current, "query_str": query}
         queries.append(result)
         current += timedelta(days=7)
 
     return queries
 
 
-def create_stats_endpoints(extract_file: str, weekly_querys:list):
+def create_stats_endpoints(extract_file: str, weekly_querys: list):
     endpoints = []
     for weekly_query in weekly_querys:
         result_query = f"{weekly_query['query_str']}/{extract_file}"
         result_dated = f"{weekly_query['dated']}_{extract_file}"
-        endpoints.append({'file_date':result_dated, 'endpoint_str':result_query})
+        endpoints.append({"file_date": result_dated, "endpoint_str": result_query})
     logger.info(f"{len(endpoints)} found.")
     return endpoints

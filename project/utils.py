@@ -38,18 +38,19 @@ class Config:
 # -----------------------------------------------------------------------------
 
 
-def fetch_api_file(base_url: str, endpoint: str, params: Optional[Dict] = None) -> BinaryIO | None:
+def fetch_api_file(
+    base_url: str, endpoint: str, params: Optional[Dict] = None
+) -> BinaryIO | None:
     """Fetches a file from an API endpoint and returns it as a BytesIO object."""
     try:
         url = base_url + endpoint
         response = requests.get(url, params=params)
         response.raise_for_status()
-        content = io.BytesIO(response.content) 
+        content = io.BytesIO(response.content)
         return content
     except requests.RequestException as e:
         logger.error(f"Error fetching data: {e}")
         return None
-
 
 
 def create_s3_session(s3=None):

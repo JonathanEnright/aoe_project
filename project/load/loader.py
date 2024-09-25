@@ -6,6 +6,7 @@ from utils import create_s3_session, upload_to_s3
 
 logger = logging.getLogger(__name__)
 
+
 def load_json_data(data_list, file_name_prefix, bucket, s3):
     """Loads Pydantic model as json files in S3."""
 

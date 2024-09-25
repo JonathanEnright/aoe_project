@@ -20,8 +20,8 @@ class WeeklyDump(BaseModel):
     match_checksum: Optional[str] = None
     player_checksum: Optional[str] = None
 
-    @model_validator(mode='after')
-    def validate_and_get_message(self) -> 'WeeklyDump':
+    @model_validator(mode="after")
+    def validate_and_get_message(self) -> "WeeklyDump":
         if self.num_matches == 0:
             msg = f"File {self.start_date} is present but is empty!"
             logger.warning(msg)
@@ -42,6 +42,7 @@ class ApiSchema(BaseModel):
 class RelicResult(BaseModel):
     code: int
     message: str
+
 
 class Member(BaseModel):
     profile_id: int
@@ -101,6 +102,7 @@ class Players(BaseModel):
     replay_summary_raw: str
     team: int
     winner: bool
+
 
 class Matches(BaseModel):
     avg_elo: float
