@@ -1,4 +1,4 @@
-from utils import Config, timer
+from utils import Config, timer, create_s3_session
 from extract import validate_json_schema, fetch_relic_chunk
 from extract import RelicResponse
 from load import load_json_data
@@ -16,7 +16,7 @@ def main():
     config = Config("config.yaml")
 
     # Setup:
-    s3 = None
+    s3 = create_s3_session()
     _base_url = config.relic_base_url
     _endpoint = config.relic_endpoint
     _params = config.relic_params
@@ -28,15 +28,14 @@ def main():
     logger.info("Starting data extraction.")
     content_chunk = fetch_relic_chunk(_base_url, _endpoint, _params)
 
-    for i, content in enumerate(content_chunk):
+    for i, json_data in enumerate(content_chunk):
         file_name_prefix = f"{_output_prefix}_{i+1}"
 
         # Validate phase
-        validated_data = validate_json_schema(content, _validation_schema)
+        validated_data = validate_json_schema(json_data, _validation_schema)
 
         # Load phase
-        s3 = load_json_data(validated_data, file_name_prefix, _s3_bucket, s3)
-        logger.info(f"{i+1}/{len(content_chunk)} loaded.")
+        load_json_data(validated_data, file_name_prefix, _s3_bucket, s3)
 
 
 if __name__ == "__main__":

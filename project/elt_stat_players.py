@@ -1,4 +1,4 @@
-from utils import Config, timer, fetch_api_file
+from utils import Config, timer, fetch_api_file, create_s3_session
 from extract import (
     generate_weekly_queries,
     create_stats_endpoints,
@@ -20,10 +20,10 @@ def main():
     config = Config("config.yaml")
 
     # Setup:
+    s3 = create_s3_session()
     _stat_file_name = config.stats_players
     _validation_schema = Players
 
-    s3 = None
     _start_date = config.run_date
     _end_date = config.run_end_date
     _base_url = config.stats_base_url + config.stats_dir_url
@@ -48,8 +48,8 @@ def main():
         # Load phase
         s3 = load_parquet_data(validated_data, dated_filename, _s3_bucket, s3)
         logger.info(f"{i+1}/{len(endpoints)} loaded.")
+    logger.info("Script complete.")
 
 
 if __name__ == "__main__":
     main()
-    logger.info("Script complete.")
