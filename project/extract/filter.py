@@ -4,37 +4,37 @@ import time
 from typing import List, Dict
 from datetime import timedelta
 from pydantic import ValidationError
-from utils import fetch_api_file
+from utils import fetch_api_json
 import pandas as pd
 
 logger = logging.getLogger(__name__)
 
 
-def fetch_relic_chunk(base_url: str, endpoint: str, params: Dict) -> List:
+def fetch_relic_chunk(base_url: str, endpoint: str, params: Dict):
     """Fetches all data from Relic API in chunks of 100/request (API limit)"""
     start = 1
-    response_list = []
+    chunk = params["chunk_size"]
+    logger.info(f"Processing data in chunks of {chunk} from {endpoint}")
     while True:
         params["start"] = start
-        logger.info(f"processing chunk {start} ")
-        response = fetch_api_file(base_url, endpoint, params)
+        response = fetch_api_json(base_url, endpoint, params)
 
         if not response:
             break
-        # Assume end of data if response bytes is <1KB.
-        if len(response.getvalue()) <= 1024:
-            logger.info(f"Assumed end of data reached!")
+        api_end = response["rankTotal"] + chunk
+        if start > api_end:
             break
+        logger.info(f"Processing chunk {start}/{api_end}")
 
-        response_list.append(response)
-        start += params["chunk_size"]
-        time.sleep(1)
-    return response_list
+        yield response
+        start += chunk
+        time.sleep(0.2)
 
 
-def validate_json_schema(content, validation_schema):
+def validate_json_schema(json_data, validation_schema):
     try:
-        data = json.load(content)
+        # data = json.load(content)
+        data = json_data
         validated_data = validation_schema.model_validate(data)
         return validated_data
     except ValidationError as e:
