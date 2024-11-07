@@ -89,7 +89,7 @@ class RelicResponse(BaseModel):
     # rankTotal: Optional[int] = None
 
 
-# -------------------------------Aoestats .parquet shemas
+# -------------------------------Aoestats .parquet schemas
 
 
 class Players(BaseModel):

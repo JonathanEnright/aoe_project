@@ -8,6 +8,7 @@ from typing import Dict, Optional, BinaryIO
 import io
 import time
 import logging
+import backoff
 
 
 logger = logging.getLogger(__name__)
@@ -37,6 +38,7 @@ class Config:
 # -----------------------------------------------------------------------------
 
 
+@backoff.on_exception(backoff.expo, requests.exceptions.RequestException, max_tries=3)
 def fetch_api_file(
     base_url: str, endpoint: str, params: Optional[Dict] = None
 ) -> BinaryIO | None:
@@ -45,11 +47,27 @@ def fetch_api_file(
         url = base_url + endpoint
         response = requests.get(url, params=params)
         response.raise_for_status()
+        if not response.content:
+            logger.warning("Received empty response from API.")
+            return None
         content = io.BytesIO(response.content)
         return content
     except requests.RequestException as e:
         logger.error(f"Error fetching data: {e}")
-        return None
+        raise
+
+
+@backoff.on_exception(backoff.expo, requests.exceptions.RequestException, max_tries=3)
+def fetch_api_json(base_url: str, endpoint: str, params: dict) -> dict | None:
+    """Fetches JSON data from an API endpoint with retry logic."""
+    try:
+        url = base_url + endpoint
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException as e:
+        logger.warning(f"API request failed: {e}. Retrying...")
+        raise  # Re-raise to trigger backoff
 
 
 def create_s3_session(s3=None):

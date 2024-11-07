@@ -4,37 +4,37 @@ import time
 from typing import List, Dict
 from datetime import timedelta
 from pydantic import ValidationError
-from utils import fetch_api_file
+from utils import fetch_api_json
 import pandas as pd
 
 logger = logging.getLogger(__name__)
 
 
-def fetch_relic_chunk(base_url: str, endpoint: str, params: Dict) -> List:
+def fetch_relic_chunk(base_url: str, endpoint: str, params: Dict):
     """Fetches all data from Relic API in chunks of 100/request (API limit)"""
     start = 1
-    response_list = []
+    chunk = params["chunk_size"]
+    logger.info(f"Processing data in chunks of {chunk} from {endpoint}")
     while True:
         params["start"] = start
-        logger.info(f"processing chunk {start} ")
-        response = fetch_api_file(base_url, endpoint, params)
+        response = fetch_api_json(base_url, endpoint, params)
 
         if not response:
             break
-        # Assume end of data if response bytes is <1KB.
-        if len(response.getvalue()) <= 1024:
-            logger.info(f"Assumed end of data reached!")
+        api_end = response["rankTotal"] + chunk
+        if start > api_end:
             break
+        logger.info(f"Processing chunk {start}/{api_end}")
 
-        response_list.append(response)
-        start += params["chunk_size"]
-        time.sleep(1)
-    return response_list
+        yield response
+        start += chunk
+        time.sleep(0.2)
 
 
-def validate_json_schema(content, validation_schema):
+def validate_json_schema(json_data, validation_schema):
     try:
-        data = json.load(content)
+        # data = json.load(content)
+        data = json_data
         validated_data = validation_schema.model_validate(data)
         return validated_data
     except ValidationError as e:
@@ -57,19 +57,26 @@ def validate_parquet_schema(content, validation_schema):
 
 
 def generate_weekly_queries(start_date, end_date):
-    sunday_start = start_date - timedelta(days=start_date.weekday() + 1)
-    saturday_end = end_date + timedelta(days=(5 - end_date.weekday() + 7) % 7)
+    # Move start date to the next Sunday if it's not already a Sunday
+    while start_date.weekday() != 6:
+        start_date += timedelta(days=1)
+
+    # Move end date to the previous Saturday if it's not already a Saturday
+    while end_date.weekday() != 5:
+        end_date -= timedelta(days=1)
 
     queries = []
-    current = sunday_start
-    logger.info(f"Finding all files between {sunday_start} and {saturday_end}.")
-    while current <= saturday_end:
-        week_end = current + timedelta(days=6)
-        query = f"{current.strftime('%Y-%m-%d')}_{week_end.strftime('%Y-%m-%d')}"
-        result = {"dated": current, "query_str": query}
-        queries.append(result)
-        current += timedelta(days=7)
-
+    print(f"Finding all files between {start_date} and {end_date}.")
+    while start_date <= end_date:
+        # Calculate the end date of the current week (the next Saturday)
+        end_date_saturday = start_date + timedelta(days=6)
+        query = {
+            "dated": start_date,
+            "query_str": f"{start_date.strftime('%Y-%m-%d')}_{end_date_saturday.strftime('%Y-%m-%d')}",
+        }
+        queries.append(query)
+        # Move to the next week
+        start_date += timedelta(days=7)
     return queries
 
 
