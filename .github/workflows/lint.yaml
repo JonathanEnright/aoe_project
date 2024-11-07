@@ -39,3 +39,7 @@ jobs:
         if: steps.Run_linting_with_Black.outcome == 'failure'
         run: echo "Linting errors found. Please fix and re-commit."
         continue-on-error: true 
+
+      - name: Run tests with pytest
+        run: |
+          project/pytest project_tests.py
