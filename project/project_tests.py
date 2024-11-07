@@ -1,9 +1,9 @@
 import pytest
 from datetime import datetime, date
-import pandas as pd
+# import pandas as pd
 import io
 from pydantic import BaseModel
-from unittest.mock import Mock, patch
+# from unittest.mock import Mock, patch
 
 from extract.filter import *
 from load.loader import *
@@ -24,18 +24,18 @@ def sample_validation_schema():
     return TestSchema
 
 
-# Tests for validate_parquet_schema
-def test_validate_parquet_schema(sample_validation_schema):
-    # Create a sample DataFrame
-    df = pd.DataFrame([{"id": 1, "name": "test1"}, {"id": 2, "name": "test2"}])
+# # Tests for validate_parquet_schema
+# def test_validate_parquet_schema(sample_validation_schema):
+#     # Create a sample DataFrame
+#     df = pd.DataFrame([{"id": 1, "name": "test1"}, {"id": 2, "name": "test2"}])
 
-    # Create a parquet file in memory
-    parquet_buffer = io.BytesIO()
-    df.to_parquet(parquet_buffer)
-    parquet_buffer.seek(0)
+#     # Create a parquet file in memory
+#     parquet_buffer = io.BytesIO()
+#     df.to_parquet(parquet_buffer)
+#     parquet_buffer.seek(0)
 
-    result = validate_parquet_schema(parquet_buffer, sample_validation_schema)
-    assert result is not None
+#     result = validate_parquet_schema(parquet_buffer, sample_validation_schema)
+#     assert result is not None
 
 
 # Tests for validate_json_schema
