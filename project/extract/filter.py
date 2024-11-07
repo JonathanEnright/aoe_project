@@ -57,19 +57,26 @@ def validate_parquet_schema(content, validation_schema):
 
 
 def generate_weekly_queries(start_date, end_date):
-    sunday_start = start_date - timedelta(days=start_date.weekday() + 1)
-    saturday_end = end_date + timedelta(days=(5 - end_date.weekday() + 7) % 7)
+    # Move start date to the next Sunday if it's not already a Sunday
+    while start_date.weekday() != 6:
+        start_date += timedelta(days=1)
+
+    # Move end date to the previous Saturday if it's not already a Saturday
+    while end_date.weekday() != 5:
+        end_date -= timedelta(days=1)
 
     queries = []
-    current = sunday_start
-    logger.info(f"Finding all files between {sunday_start} and {saturday_end}.")
-    while current <= saturday_end:
-        week_end = current + timedelta(days=6)
-        query = f"{current.strftime('%Y-%m-%d')}_{week_end.strftime('%Y-%m-%d')}"
-        result = {"dated": current, "query_str": query}
-        queries.append(result)
-        current += timedelta(days=7)
-
+    print(f"Finding all files between {start_date} and {end_date}.")
+    while start_date <= end_date:
+        # Calculate the end date of the current week (the next Saturday)
+        end_date_saturday = start_date + timedelta(days=6)
+        query = {
+            "dated": start_date,
+            "query_str": f"{start_date.strftime('%Y-%m-%d')}_{end_date_saturday.strftime('%Y-%m-%d')}",
+        }
+        queries.append(query)
+        # Move to the next week
+        start_date += timedelta(days=7)
     return queries
 
 
