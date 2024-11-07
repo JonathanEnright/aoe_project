@@ -42,4 +42,4 @@ jobs:
 
       - name: Run tests with pytest
         run: |
-          project/pytest project_tests.py
+          pytest project/project_tests.py
