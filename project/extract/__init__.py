@@ -3,7 +3,7 @@ from .filter import (
     validate_json_schema,
     generate_weekly_queries,
     create_stats_endpoints,
-    validate_parquet_schema,
+    # validate_parquet_schema,
     fetch_relic_chunk,
 )
 
@@ -16,6 +16,6 @@ __all__ = [
     "validate_json_schema",
     "generate_weekly_queries",
     "create_stats_endpoints",
-    "validate_parquet_schema",
+    # "validate_parquet_schema",
     "fetch_relic_chunk",
 ]
