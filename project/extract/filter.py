@@ -5,7 +5,8 @@ from typing import List, Dict
 from datetime import timedelta
 from pydantic import ValidationError
 from utils import fetch_api_json
-import pandas as pd
+
+# import pandas as pd
 
 logger = logging.getLogger(__name__)
 
@@ -42,18 +43,18 @@ def validate_json_schema(json_data, validation_schema):
         return []
 
 
-def validate_parquet_schema(content, validation_schema):
-    df = pd.read_parquet(content)
-    records = df.to_dict(orient="records")
-    for record in records:
-        try:
-            validation_schema.model_validate(record)
-        except ValidationError as e:
-            logger.error("Validation error:", e)
+# def validate_parquet_schema(content, validation_schema):
+#     df = pd.read_parquet(content)
+#     records = df.to_dict(orient="records")
+#     for record in records:
+#         try:
+#             validation_schema.model_validate(record)
+#         except ValidationError as e:
+#             logger.error("Validation error:", e)
 
-    # Reset the pointer to start of file:
-    content.seek(0)
-    return content
+#     # Reset the pointer to start of file:
+#     content.seek(0)
+#     return content
 
 
 def generate_weekly_queries(start_date, end_date):
