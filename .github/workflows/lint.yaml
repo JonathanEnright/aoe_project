@@ -29,9 +29,8 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install --force-reinstall numpy
-          pip install --force-reinstall pandas
-          pip install -r requirements.txt  # Install other dependencies
+          pip install --no-binary=:all: numpy==1.22 pandas==1.4.4
+          pip install --no-binary=:all: -r requirements.txt  # Install other dependencies
       
       - name: Verify NumPy version
         run: python -c "import numpy; print(numpy.__version__)"
