@@ -42,7 +42,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install --no-binary=:all: numpy==2.0 pandas==2.2.2
+          pip install --no-binary=:all: numpy==2.0 pandas==2.2.2 pyarrow==14.0.0
           pip install --no-binary=:all: -r requirements.txt  # Install other dependencies
       
       - name: Verify NumPy version
