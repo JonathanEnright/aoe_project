@@ -42,7 +42,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install numpy==2.0 pandas==2.2.2 pyarrow fastparquet
           pip install -r requirements.txt  # Install other dependencies
       
       - name: Verify NumPy version
