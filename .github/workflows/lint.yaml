@@ -21,24 +21,10 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Create and activate virtual environment
-        run: |
-          python -m venv .venv
-          source .venv/bin/activate
-
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake libc-dev libssl-dev
-
-      - name: Install compilers
-        run: |
-          sudo apt-get install -y build-essential
-
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install -r requirements.txt  # Install other dependencies
+          pip install -r requirements.txt 
       
       - name: Run_linting_with_Black
         uses: psf/black@stable
