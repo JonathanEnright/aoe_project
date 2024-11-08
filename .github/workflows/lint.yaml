@@ -40,7 +40,7 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt  # Install other dependencies
       
-       - name: Run_linting_with_Black
+      - name: Run_linting_with_Black
         uses: psf/black@stable
         with:
           src: '.'
