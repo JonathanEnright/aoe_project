@@ -26,6 +26,19 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
 
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake libc-dev libssl-dev
+
+      - name: Install compilers
+        run: |
+          sudo apt-get install -y build-essential
+
+      - name: Clear cache
+        run: |
+          rm -rf $HOME/.cache/pip
+
       - name: Install dependencies
         run: |
           pip install --upgrade pip
