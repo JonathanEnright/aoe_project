@@ -5,6 +5,7 @@ from typing import List, Dict
 from datetime import timedelta
 from pydantic import ValidationError
 from utils import fetch_api_json
+
 import pandas as pd
 
 logger = logging.getLogger(__name__)
