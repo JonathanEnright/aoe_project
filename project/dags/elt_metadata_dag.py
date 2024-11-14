@@ -4,7 +4,7 @@ from airflow.operators.python import PythonOperator
 import sys
 import os
 
-# Add the 'include' directory to the Python path
+# Add the 'src' directory to the Python path
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(os.path.join(project_root, "src"))
 
