@@ -7,9 +7,9 @@ from pydantic import BaseModel
 
 # from unittest.mock import Mock, patch
 
-from src.extract.filter import *
+from extract.filter import *
 
-from src.load.loader import *
+from load.loader import *
 
 
 @pytest.fixture
