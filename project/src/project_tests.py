@@ -1,5 +1,10 @@
 import pytest
 from datetime import datetime, date
+import os
+import sys
+
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(os.path.join(project_root, "src"))
 
 import pandas as pd
 import io
