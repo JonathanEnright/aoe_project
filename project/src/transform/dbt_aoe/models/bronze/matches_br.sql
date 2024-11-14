@@ -9,7 +9,7 @@ WITH
       {{ ref('v_matches_raw') }}
    )
 SELECT
-   value:avg_elo::DEC(38,2) AS avg_elo
+   value: avg_elo::DEC(38,2) AS avg_elo
    ,value:duration::INT AS duration
    ,value:game_id::INT AS game_id
    ,value:game_speed::VARCHAR AS game_speed

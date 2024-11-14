@@ -12,3 +12,7 @@ sf_setup.sql
 project/transform/logs
 relic_link_testing
 logs
+packages.txt
+test_dag_example.py
+include
+plugins

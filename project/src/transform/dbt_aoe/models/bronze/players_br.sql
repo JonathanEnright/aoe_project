@@ -9,7 +9,7 @@ WITH
       {{ ref('v_players_raw') }}
    )
 SELECT
-   value:civ::VARCHAR AS civ
+   value: civ::VARCHAR AS civ
    ,value:game_id::INT AS game_id
    ,value:match_rating_diff::INT AS match_rating_diff
    ,value:new_rating::INT AS new_rating
