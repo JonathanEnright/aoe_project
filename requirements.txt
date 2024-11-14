@@ -9,3 +9,5 @@ pytest==7.4.0
 python-dotenv==1.0.1
 PyYAML==6.0.2
 Requests==2.32.3
+astronomer-cosmos
+apache-airflow-providers-snowflake
