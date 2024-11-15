@@ -16,3 +16,4 @@ packages.txt
 test_dag_example.py
 include
 plugins
+.venv
