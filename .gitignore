@@ -24,5 +24,4 @@ logs/
 airflow.db
 airflow.cfg
 profiles.yml
-tests
 .pytest_cache
