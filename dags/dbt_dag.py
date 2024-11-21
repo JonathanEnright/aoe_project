@@ -1,25 +1,19 @@
 import os
 from datetime import datetime
-
 from cosmos import DbtDag, ProjectConfig, ProfileConfig, ExecutionConfig
-from cosmos.profiles import SnowflakeUserPasswordProfileMapping
-
 
 profile_config = ProfileConfig(
-    profile_name="default",
+    profile_name="dbt_aoe",
     target_name="dev",
-    profile_mapping=SnowflakeUserPasswordProfileMapping(
-        conn_id="snowflake_conn",
-        profile_args={"database": "aoe", "schema": "landing"},
-    ),
+    profiles_yml_filepath=f"{os.environ['AIRFLOW_HOME']}/src/transform/dbt_aoe/profiles.yml",
 )
 
-dbt_snowflake_dag = DbtDag(
+dag = DbtDag(
+    profile_config=profile_config,
     project_config=ProjectConfig(
-        "/usr/local/airflow/src/transform/dbt_aoe",
+        f"{os.environ['AIRFLOW_HOME']}/src/transform/dbt_aoe",
     ),
     operator_args={"install_deps": True},
-    profile_config=profile_config,
     execution_config=ExecutionConfig(
         dbt_executable_path=f"{os.environ['AIRFLOW_HOME']}/dbt_venv/bin/dbt",
     ),

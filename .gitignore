@@ -17,3 +17,12 @@ test_dag_example.py
 include
 plugins
 .venv
+astro
+.git
+airflow_settings.yaml
+logs/
+airflow.db
+airflow.cfg
+profiles.yml
+tests
+.pytest_cache
