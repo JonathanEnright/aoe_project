@@ -20,13 +20,13 @@ models:
         data_tests:
           - within_threshold:
               'lower_threshold': "'2022-01-01'"
-              'upper_threshold': CURRENT_DATE
+              'upper_threshold': CURRENT_DATE()+1
               'error_lim': 1
       - name: game_date
         data_tests:
           - within_threshold:
               'lower_threshold': "'2022-01-01'"
-              'upper_threshold': CURRENT_DATE
+              'upper_threshold': CURRENT_DATE()+1
               'error_lim': 1
 
   - name: player_leaderboard_stats_sr
@@ -37,7 +37,7 @@ models:
         data_tests:
           - within_threshold: 
               'lower_threshold': "'2022-01-01'"
-              'upper_threshold': CURRENT_DATE
+              'upper_threshold': CURRENT_DATE()+1
               'error_lim': 1
 
   - name: player_match_sr

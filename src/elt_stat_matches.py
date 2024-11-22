@@ -7,6 +7,8 @@ from extract import (
 from extract import Matches
 from load import load_parquet_data
 import logging
+import os
+from pathlib import Path
 
 # Configure logging
 logging.basicConfig(
@@ -14,10 +16,15 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Get the directory of the current script
+script_dir = Path(__file__).resolve().parent
+
+YAML_CONFIG = os.path.join(script_dir, "config.yaml")
+
 
 @timer
-def main():
-    config = Config("config.yaml")
+def main(*args, **kwargs):
+    config = Config(YAML_CONFIG)
 
     # Setup:
     s3 = create_s3_session()
@@ -41,11 +48,17 @@ def main():
         # Extract phase
         content = fetch_api_file(_base_url, endpoint_url, _params)
 
+        if content is None:
+            logger.error(
+                f"Failed to fetch data after 3 attempts for endpoint: {endpoint_url}"
+            )
+            continue  # Skip to the next iteration of the loop
+
         # Validate phase
         validated_data = validate_parquet_schema(content, _validation_schema)
 
         # Load phase
-        s3 = load_parquet_data(validated_data, dated_filename, _s3_bucket, s3)
+        load_parquet_data(validated_data, dated_filename, _s3_bucket, s3)
         logger.info(f"{i+1}/{len(endpoints)} loaded.")
     logger.info("Script complete.")
 
