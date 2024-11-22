@@ -25,3 +25,4 @@ airflow.db
 airflow.cfg
 profiles.yml
 .pytest_cache
+.astro

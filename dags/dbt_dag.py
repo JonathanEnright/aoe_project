@@ -20,5 +20,5 @@ dag = DbtDag(
     schedule_interval="@daily",
     start_date=datetime(2023, 9, 10),
     catchup=False,
-    dag_id="dbt_dag",
+    dag_id="dbt_dag_id",
 )

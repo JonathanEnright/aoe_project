@@ -25,12 +25,23 @@ class Config:
     def __init__(self, yaml_file: str):
         with open(yaml_file, "r") as f:
             self.__dict__.update(yaml.safe_load(f))
-        self.run_date = self.parse_date(self.backdate_days_start, self.date_format)
-        self.run_end_date = self.parse_date(self.backdate_days_end, self.date_format)
+        self.run_date = self.parse_date(
+            self.backdate_days_start, self.target_run_date, self.date_format
+        )
+        self.run_end_date = self.parse_date(
+            self.backdate_days_end, self.target_run_end_date, self.date_format
+        )
 
     @staticmethod
-    def parse_date(backdate_days: int, date_format: str):
-        return (datetime.now() - timedelta(days=backdate_days)).date()
+    def parse_date(backdate_days: int, specific_date: str, date_format: str):
+        """Creates a date object on initialisation. If target_run_date is specified,
+        it takes priority, otherwise uses a number of backdated days from current date.
+        """
+        if specific_date:
+            result = datetime.strptime(specific_date, date_format).date()
+        else:
+            result = (datetime.now() - timedelta(days=backdate_days)).date()
+        return result
 
 
 # -----------------------------------------------------------------------------
@@ -54,7 +65,7 @@ def fetch_api_file(
         return content
     except requests.RequestException as e:
         logger.error(f"Error fetching data: {e}")
-        raise
+        return None
 
 
 @backoff.on_exception(backoff.expo, requests.exceptions.RequestException, max_tries=3)
