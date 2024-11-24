@@ -27,7 +27,8 @@ def main(*args, **kwargs):
     _endpoint = config.metadata_endpoint
     _params = None
     _validation_schema = ApiSchema
-    _output_prefix = f"{config.run_end_date}_{config.metadata_output_prefix}"
+    _fn = f"{config.run_end_date}_{config.metadata_fn_suffix}"
+    _file_dir = config.metadata_folder_name
     _s3_bucket = config.bucket
 
     try:
@@ -47,7 +48,7 @@ def main(*args, **kwargs):
 
         # Load phase
         logger.info("Starting data loading.")
-        load_json_data(validated_data, _output_prefix, _s3_bucket, s3)
+        load_json_data(validated_data, _file_dir, _fn, _s3_bucket, s3)
 
         logger.info("ELT process completed successfully.")
     except Exception as e:

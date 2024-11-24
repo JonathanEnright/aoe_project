@@ -28,7 +28,8 @@ def main(*args, **kwargs):
     _endpoint = config.relic_endpoint
     _params = config.relic_params
     _validation_schema = RelicResponse
-    _output_prefix = config.relic_file_name
+    _fn = config.relic_fn_suffix
+    _file_dir = config.relic_folder_name
     _s3_bucket = config.bucket
 
     # Extract phase
@@ -36,13 +37,13 @@ def main(*args, **kwargs):
     content_chunk = fetch_relic_chunk(_base_url, _endpoint, _params)
 
     for i, json_data in enumerate(content_chunk):
-        file_name_prefix = f"{_output_prefix}_{i+1}"
+        fn = f"{_fn}_{i+1}"
 
         # Validate phase
         validated_data = validate_json_schema(json_data, _validation_schema)
 
         # Load phase
-        load_json_data(validated_data, file_name_prefix, _s3_bucket, s3)
+        load_json_data(validated_data, _file_dir, fn, _s3_bucket, s3)
         logger.info("Script complete.")
 
 

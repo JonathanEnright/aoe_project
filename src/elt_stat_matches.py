@@ -28,7 +28,8 @@ def main(*args, **kwargs):
 
     # Setup:
     s3 = create_s3_session()
-    _stat_file_name = config.stats_matches
+    _fn = config.matches_fn_suffix
+    _file_dir = config.matches_folder_name
     _validation_schema = Matches
 
     _start_date = config.run_date
@@ -39,11 +40,12 @@ def main(*args, **kwargs):
 
     # Pre-extract phase
     weekly_querys = generate_weekly_queries(_start_date, _end_date)
-    endpoints = create_stats_endpoints(_stat_file_name, weekly_querys)
+    endpoints = create_stats_endpoints(_fn, weekly_querys)
 
     for i, endpoint in enumerate(endpoints):
         endpoint_url = endpoint["endpoint_str"]
         dated_filename = endpoint["file_date"]
+        file_dir = f"{_file_dir}/{dated_filename.split('_')[0]}"
 
         # Extract phase
         content = fetch_api_file(_base_url, endpoint_url, _params)
@@ -58,7 +60,7 @@ def main(*args, **kwargs):
         validated_data = validate_parquet_schema(content, _validation_schema)
 
         # Load phase
-        load_parquet_data(validated_data, dated_filename, _s3_bucket, s3)
+        load_parquet_data(validated_data, file_dir, dated_filename, _s3_bucket, s3)
         logger.info(f"{i+1}/{len(endpoints)} loaded.")
     logger.info("Script complete.")
 
