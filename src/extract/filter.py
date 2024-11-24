@@ -84,8 +84,8 @@ def generate_weekly_queries(start_date, end_date):
 def create_stats_endpoints(extract_file: str, weekly_querys: list):
     endpoints = []
     for weekly_query in weekly_querys:
-        result_query = f"{weekly_query['query_str']}/{extract_file}"
         result_dated = f"{weekly_query['dated']}_{extract_file}"
+        result_query = f"{weekly_query['query_str']}/{extract_file}.parquet"
         endpoints.append({"file_date": result_dated, "endpoint_str": result_query})
     logger.info(f"{len(endpoints)} found.")
     return endpoints

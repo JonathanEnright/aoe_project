@@ -1,18 +1,24 @@
 # parse_date params (update here for 1 time loads or backdating)
 backdate_days_start: 90
-backdate_days_end: 1
+backdate_days_end: 60
 target_run_date: ~
 target_run_end_date: ~
 date_format: '%Y-%m-%d'
+full_refresh_ind: 1
 
 # AoeStats
 stats_dir_url: '/media/db_dumps/date_range%3D'
-stats_matches: 'matches.parquet'
-stats_players: 'players.parquet'
-base_url: https://aoestats.io
+matches_fn_suffix: 'matches'
+players_fn_suffix: 'players'
+# base_url: https://aoestats.io
 stats_base_url: https://aoestats.io
+matches_folder_name: dev/matches
+players_folder_name: dev/players
+
+
 metadata_endpoint: /api/db_dumps.json
-metadata_output_prefix: metadata
+metadata_fn_suffix: metadata
+metadata_folder_name: dev/meta
 
 # RelicLink
 relic_base_url: https://aoe-api.worldsedgelink.com
@@ -22,7 +28,8 @@ relic_params:
   title: age2
   sort_by: 0
   chunk_size: 100 
-relic_file_name: rl_api/relic
+relic_fn_suffix: relic
+relic_folder_name: dev/rl_api
 
 # s3 bucket. Other bucket params are in .env file.
 bucket: aoe2dumps

@@ -71,8 +71,8 @@ def test_generate_weekly_queries(sample_dates):
 
 def test_create_stats_endpoints():
     weekly_queries = [{"dated": date(2023, 1, 1), "query_str": "2023-01-01_2023-01-07"}]
-    extract_file = "stats.json"
+    extract_file = "stats"
     endpoints = create_stats_endpoints(extract_file, weekly_queries)
     assert len(endpoints) == 1
-    assert endpoints[0]["endpoint_str"] == "2023-01-01_2023-01-07/stats.json"
-    assert endpoints[0]["file_date"] == "2023-01-01_stats.json"
+    assert endpoints[0]["endpoint_str"] == "2023-01-01_2023-01-07/stats.parquet"
+    assert endpoints[0]["file_date"] == "2023-01-01_stats"
