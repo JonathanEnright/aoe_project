@@ -69,22 +69,15 @@ jobs:
         run: mkdir -p ~/.dbt
 
       - name: Write profiles.yml file
-        env:
-          DBT_PROFILES: ${{ secrets.DBT_PROFILES }}
-        run: |
-          echo "$DBT_PROFILES" > ~/.dbt/profiles.yml
+          working-directory: ~/.dbt
+          env:
+            DBT_PROFILES: ${{ secrets.DBT_PROFILES }}
+          run: echo "$DBT_PROFILES" > profiles.yml
 
-      - name: Verify dbt project structure
-        working-directory: /home/runner/work/aoe_project/aoe_project/src/transform/dbt_aoe
-        run: |
-          pwd
-          ls -l
-          cat dbt_project.yml
-
-      - name: Run dbt
-        working-directory: /home/runner/work/aoe_project/aoe_project/src/transform/dbt_aoe
-        run: |
-          dbt debug --profiles-dir=~/.dbt
-          dbt run --target dev --profiles-dir=~/.dbt
+      - name: Run dbt debug
+          working-directory: /home/runner/work/aoe_project/aoe_project/src/transform/dbt_aoe
+          run: |
+            dbt debug --profiles-dir=~/.dbt
+            dbt run --target dev --profiles-dir=~/.dbt
 
 
