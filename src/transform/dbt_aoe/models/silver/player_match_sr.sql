@@ -13,5 +13,6 @@ SELECT
     ,new_rating
     ,old_rating
     ,source
+    ,file_date
 FROM
     {{ ref('players_br') }}

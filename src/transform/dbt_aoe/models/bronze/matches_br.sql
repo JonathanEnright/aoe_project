@@ -29,5 +29,6 @@ SELECT
    ,rsrc::VARCHAR AS rsrc
    ,ldts::TIMESTAMP_NTZ(9) AS ldts
    ,source
+   ,file_date
 FROM
    landing_data

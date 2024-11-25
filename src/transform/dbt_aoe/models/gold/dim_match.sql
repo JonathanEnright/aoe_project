@@ -23,5 +23,6 @@ SELECT
     ,rsrc
     ,CURRENT_DATE() AS load_date
     ,source
+    ,file_date
 FROM
     deduplicated

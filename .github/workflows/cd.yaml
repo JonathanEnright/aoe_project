@@ -1,16 +1,46 @@
-name: Post-Merge Action
+name: CD Workflow
 
 on:
   push:
     branches:
       - main
 
+
 jobs:
-  post-merge-job:
+  copy-s3-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Install AWS CLI (if not already installed)
+        run: |
+          if ! command -v aws &> /dev/null; then
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+          fi
+
+      - name: Sync S3 Data
+        run: |
+          aws s3 sync s3://aoe2dumps/dev/ s3://aoe2dumps/prod/
+
+      - name: Verify Sync Operation
+        run: |
+          # Example verification: List objects in the destination prefix
+          aws s3 ls s3://aoe2dumps/prod/ --recursive
+
+
+  prod_dbt_deployment:
     name: Full dbt-run in prod environment
-    
-    # Only run if the pull request was merged
-    # if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -39,6 +69,11 @@ jobs:
           cd src/transform/dbt_aoe
           dbt deps
 
+      - name: Refresh dbt external tables
+        run: |
+          cd src/transform/dbt_aoe
+          dbt run-operation --target prod stage_external_sources --vars "ext_full_refresh: true"
+
       - name: Run dbt run
         run: |
           cd src/transform/dbt_aoe
@@ -47,8 +82,9 @@ jobs:
       - name: Run dbt tests
         run: |
           cd src/transform/dbt_aoe
-          dbt test --target dev
+          dbt test --target prod
     
       - name: Run post-merge actions
         run: |
           echo "Pull request has been approved and merged to main"
+          

@@ -14,6 +14,7 @@ SELECT
     ,pm.new_rating
     ,pm.old_rating
     ,pm.source
+    ,pm.file_date
     ,CURRENT_DATE() as load_date
 FROM
     {{ ref('player_match_sr') }} as pm
