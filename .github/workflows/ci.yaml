@@ -1,4 +1,4 @@
-name: Lint and Format Code
+name: CI Workflow
 
 on: 
   pull_request:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  lint_and_format:
+  lint_and_test:
     name: Lint & Format Codebase
     runs-on: ubuntu-latest
     steps:
@@ -41,7 +41,7 @@ jobs:
         run: |
           pytest src/project_tests.py
 
-  dbt-run:
+  dev_dbt_deployment:
     name: Full dbt-run in dev environment
     needs: lint_and_format 
     runs-on: ubuntu-latest
@@ -71,6 +71,11 @@ jobs:
         run: |
           cd src/transform/dbt_aoe
           dbt deps
+
+      - name: Refresh dbt external tables
+        run: |
+          cd src/transform/dbt_aoe
+          dbt run-operation --target dev stage_external_sources --vars "ext_full_refresh: true"
 
       - name: Run dbt run
         run: |

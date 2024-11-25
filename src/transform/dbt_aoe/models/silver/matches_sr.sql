@@ -22,6 +22,7 @@ SELECT
     ,rsrc
     ,ldts
     ,source
+    ,file_date
 FROM
     {{ ref('matches_br') }}
 WHERE
