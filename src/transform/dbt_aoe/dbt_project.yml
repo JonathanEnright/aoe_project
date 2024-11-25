@@ -33,4 +33,11 @@ models:
   dbt_aoe:
     # Config indicated by + and applies to all files under models/example/
     bronze:
-      +materialized: view
+      +materialized: table
+      +schema: bronze
+    silver:
+      +materialized: table
+      +schema: silver
+    gold:
+      +materialized: table
+      +schema: gold

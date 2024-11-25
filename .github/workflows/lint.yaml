@@ -43,3 +43,22 @@ jobs:
       - name: Run tests with pytest
         run: |
           pytest src/project_tests.py
+
+  dbt-run:
+    name: Full dbt-run in dev environment
+    needs: lint_and_format 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install dbt-core dbt-snowflake 
+
+      - name: Run dbt
+        run: dbt run --target dev

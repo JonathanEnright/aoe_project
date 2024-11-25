@@ -9,8 +9,6 @@ import time
 import logging
 import backoff
 import snowflake.connector
-
-# from snowflake.snowpark.session import Session
 from dotenv import load_dotenv, find_dotenv
 
 
@@ -120,39 +118,6 @@ def timer(func):
         return result
 
     return wrapper
-
-
-# def sf_connect(
-#     db: str | None = os.getenv("SF_DATABASE"),
-#     schema: str | None = os.getenv("SF_SCHEMA"),
-# ) -> Session:
-#     """
-#     Users environment variables (store in .env) to connect to Snowflake.
-#     Optional: to specify database or schema.
-#     Returns: A snowflake session.
-#     """
-
-#     logger.info("Connecting to Snowflake...")
-#     connection_paramerters = {
-#         "account": os.getenv("SF_ACCOUNT_NAME"),
-#         "user": os.getenv("SF_USERNAME"),
-#         "password": os.getenv("SF_PASSWORD"),
-#         "warehouse": os.getenv("SF_WAREHOUSE"),
-#         "role": os.getenv("SF_ROLE"),
-#         "database": db,
-#         "schema": schema,
-#     }
-#     session = Session.builder.configs(connection_paramerters).create()
-#     logger.info("Session successfully created")
-#     logger.info(
-#         "Database               : {}".format(session.get_current_database())
-#     )
-#     logger.info("Schema         : {}".format(session.get_current_schema()))
-#     logger.info(
-#         "Warehouse                   : {}".format(session.get_current_warehouse())
-#     )
-#     logger.info("Role                        : {}".format(session.get_current_role()))
-#     return session
 
 
 def sf_connect(
