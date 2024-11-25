@@ -50,10 +50,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '3.12'
 
@@ -66,20 +66,21 @@ jobs:
           ls -R ${GITHUB_WORKSPACE}
      
       - name: Create .dbt directory
+        working-directory: ${GITHUB_WORKSPACE}
         run: mkdir -p .dbt
 
       - name: Write profiles.yml
-        working-directory: .dbt
+        working-directory: ${GITHUB_WORKSPACE}/.dbt
         env:
           DBT_PROFILES: ${{ secrets.DBT_PROFILES }}
         run: echo "$DBT_PROFILES" > profiles.yml
 
       - name: Run dbt debug
-        working-directory: src/transform/dbt_aoe
+        working-directory: ${GITHUB_WORKSPACE}/src/transform/dbt_aoe
         run: |
-          dbt debug --profiles-dir=../../.dbt
+          dbt debug --profiles-dir=${GITHUB_WORKSPACE}/.dbt
 
       - name: Run dbt run
-        working-directory: src/transform/dbt_aoe
+        working-directory: ${GITHUB_WORKSPACE}/src/transform/dbt_aoe
         run: |
-          dbt run --target dev --profiles-dir=../../.dbt
+          dbt run --target dev --profiles-dir=${GITHUB_WORKSPACE}/.dbt
