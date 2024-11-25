@@ -65,19 +65,21 @@ jobs:
           pwd
           ls -R ${GITHUB_WORKSPACE}
      
-      - name: Create profiles directory
-        run: mkdir -p ${GITHUB_WORKSPACE}/.dbt
+      - name: Create .dbt directory
+        run: mkdir -p ${{GITHUB_WORKSPACE}}/.dbt
 
-      - name: Write profiles.yml file
-        working-directory: ${GITHUB_WORKSPACE}/.dbt
+      - name: Write profiles.yml
+        working-directory: ${{GITHUB_WORKSPACE}}/.dbt
         env:
           DBT_PROFILES: ${{ secrets.DBT_PROFILES }}
         run: echo "$DBT_PROFILES" > profiles.yml
 
       - name: Run dbt debug
-        working-directory: /home/runner/work/aoe_project/aoe_project/src/transform/dbt_aoe
+        working-directory: ${{GITHUB_WORKSPACE}}/src/transform/dbt_aoe
         run: |
-          dbt debug --profiles-dir=${GITHUB_WORKSPACE}/.dbt
-          dbt run --target dev --profiles-dir=${GITHUB_WORKSPACE}/.dbt
+          dbt debug --profiles-dir=${{GITHUB_WORKSPACE}}/.dbt
 
-
+      - name: Run dbt run
+        working-directory: ${{GITHUB_WORKSPACE}}/src/transform/dbt_aoe
+        run: |
+          dbt run --target dev --profiles-dir=${{GITHUB_WORKSPACE}}/.dbt
