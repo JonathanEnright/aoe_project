@@ -61,4 +61,4 @@ jobs:
         run: pip install dbt-core dbt-snowflake 
 
       - name: Run dbt
-        run: dbt run --target dev
+        run: dbt run --target dev --profiles-dir=${GITHUB_WORKSPACE}/src/transform/dbt_aoe

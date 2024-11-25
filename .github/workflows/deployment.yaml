@@ -25,7 +25,7 @@ jobs:
         run: pip install dbt-core dbt-snowflake 
 
       - name: Run dbt
-        run: dbt run --target prod
+        run: dbt run --target prod --profiles-dir=${GITHUB_WORKSPACE}/src/transform/dbt_aoe
       
       - name: Run post-merge actions
         run: |
