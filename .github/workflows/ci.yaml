@@ -76,3 +76,8 @@ jobs:
         run: |
           cd src/transform/dbt_aoe
           dbt run --target dev
+
+      - name: Run dbt tests
+        run: |
+          cd src/transform/dbt_aoe
+          dbt test --target dev
