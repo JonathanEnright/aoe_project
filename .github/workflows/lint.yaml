@@ -60,5 +60,10 @@ jobs:
       - name: Install dependencies
         run: pip install dbt-core dbt-snowflake 
 
+      - name: Copy dbt profiles
+        run: |
+          mkdir -p ~/.dbt
+          cp ${GITHUB_WORKSPACE}/src/transform/dbt_aoe/profiles.yml ~/.dbt/profiles.yml
+
       - name: Run dbt
-        run: dbt run --target dev --profiles-dir=${GITHUB_WORKSPACE}/src/transform/dbt_aoe
+        run: dbt run --target dev
