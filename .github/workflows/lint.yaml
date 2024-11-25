@@ -59,13 +59,7 @@ jobs:
 
       - name: Install dependencies
         run: pip install dbt-core dbt-snowflake 
-
-      - name: Debug repository structure
-        run: |
-          pwd
-          ls -R ${GITHUB_WORKSPACE}
-     
-
+    
       - name: Write profiles.yml
         env:
           DBT_PROFILES: ${{ secrets.DBT_PROFILES }}
