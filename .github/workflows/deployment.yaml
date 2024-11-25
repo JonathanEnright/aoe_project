@@ -2,7 +2,7 @@ name: Post-Merge Action
 
 on:
   pull_request:
-    types: [closed]
+    # types: [closed]
     branches:
       - main
 
