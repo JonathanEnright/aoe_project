@@ -2,11 +2,22 @@ your_project_name:
   target: dev
   outputs:
     dev:
-      type: snowflake
       account: YOUR_ACCOUNT
-      user: YOUR_USERNAME
-      password: YOUR_PASSWORD
-      warehouse: YOUR_WAREHOUSE
       database: YOUR_DATABASE
+      password: YOUR_PASSWORD
+      role: YOUR_ROLE
       schema: YOUR_SCHEMA
-      threads: 1
+      threads: 4
+      type: snowflake
+      user: YOUR_USERNAME
+      warehouse: YOUR_WAREHOUSE
+    prod:
+      account: YOUR_ACCOUNT
+      database: YOUR_DATABASE
+      password: YOUR_PASSWORD
+      role: YOUR_ROLE
+      schema: YOUR_SCHEMA
+      threads: 4
+      type: snowflake
+      user: YOUR_USERNAME
+      warehouse: YOUR_WAREHOUSE
