@@ -76,6 +76,11 @@ jobs:
           cd src/transform/dbt_aoe
           dbt debug
 
+      - name: Run dbt deps
+        run: |
+          cd src/transform/dbt_aoe
+          dbt deps
+
       - name: Run dbt run
         run: |
           cd src/transform/dbt_aoe
