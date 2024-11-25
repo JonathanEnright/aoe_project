@@ -11,3 +11,5 @@ PyYAML==6.0.2
 Requests==2.32.3
 astronomer-cosmos
 apache-airflow-providers-snowflake
+snowflake-connector-python==3.7.0
+

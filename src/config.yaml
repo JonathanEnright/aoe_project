@@ -1,6 +1,6 @@
 # parse_date params (update here for 1 time loads or backdating)
-backdate_days_start: 90
-backdate_days_end: 60
+backdate_days_start: 130
+backdate_days_end: 90
 target_run_date: ~
 target_run_end_date: ~
 date_format: '%Y-%m-%d'
@@ -10,7 +10,6 @@ full_refresh_ind: 1
 stats_dir_url: '/media/db_dumps/date_range%3D'
 matches_fn_suffix: 'matches'
 players_fn_suffix: 'players'
-# base_url: https://aoestats.io
 stats_base_url: https://aoestats.io
 matches_folder_name: dev/matches
 players_folder_name: dev/players
