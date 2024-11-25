@@ -9,6 +9,7 @@ on:
 jobs:
   post-merge-job:
     name: Full dbt-run in prod environment
+    
     # Only run if the pull request was merged
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
