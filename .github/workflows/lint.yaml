@@ -74,7 +74,8 @@ jobs:
       - name: Run dbt debug
         # working-directory: /src/transform/dbt_aoe
         run: |
-          dbt debug --profiles-dir=src/transform/dbt_aoe
+          cd src/transform/dbt_aoe
+          dbt debug
 
       - name: Run dbt run
         working-directory: src/transform/dbt_aoe
