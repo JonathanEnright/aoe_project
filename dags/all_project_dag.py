@@ -22,6 +22,13 @@ with DAG(
 
     end_trigger = PythonOperator(task_id="run_all_end", python_callable=_dag_end)
 
+    trigger_set_load_master = TriggerDagRunOperator(
+        task_id="trigger_load_master",
+        trigger_dag_id="set_load_master_id",
+        wait_for_completion=True,
+        poke_interval=30,
+    )
+
     trigger_elt_metadata = TriggerDagRunOperator(
         task_id="trigger_metadata",
         trigger_dag_id="elt_metadata_dag_id",
@@ -59,11 +66,13 @@ with DAG(
 
     # Run order: Check for metadata, then load stats datasets. Can run relic_api simultaneously.
     start_trigger >> trigger_elt_metadata
+    start_trigger >> trigger_set_load_master
+    start_trigger >> trigger_elt_relic_api
     trigger_elt_metadata >> trigger_elt_stat_matches
     trigger_elt_metadata >> trigger_elt_stat_players
-    start_trigger >> trigger_elt_relic_api
 
-    # Only trigger dbt_dag if all 3 datasets are finished.
+    # Only trigger dbt_dag if all 3 datasets + load_master are finished.
+    trigger_set_load_master >> trigger_dbt_dag
     trigger_elt_stat_matches >> trigger_dbt_dag
     trigger_elt_stat_players >> trigger_dbt_dag
     trigger_elt_relic_api >> trigger_dbt_dag
