@@ -60,11 +60,16 @@ jobs:
       - name: Install dependencies
         run: pip install dbt-core dbt-snowflake 
 
-      - name: Create dbt directory
-        run: mkdir -p ${GITHUB_WORKSPACE}/.dbt
+      - name: Debug repository structure
+        run: |
+          pwd
+          ls -R ${GITHUB_WORKSPACE}
 
-      - name: Write profiles.yml file
-        run: echo "$DBT_PROFILES" > ${GITHUB_WORKSPACE}/.dbt/profiles.yml
+      # - name: Create dbt directory
+      #   run: mkdir -p ${GITHUB_WORKSPACE}/.dbt
 
-      - name: Run dbt
-        run: dbt run --target dev --profiles-dir=${GITHUB_WORKSPACE}/.dbt
+      # - name: Write profiles.yml file
+      #   run: echo "$DBT_PROFILES" > ${GITHUB_WORKSPACE}/.dbt/profiles.yml
+
+      # - name: Run dbt
+      #   run: dbt run --target dev --profiles-dir=${GITHUB_WORKSPACE}/.dbt
