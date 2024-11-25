@@ -63,13 +63,8 @@ jobs:
       - name: Create dbt directory
         run: mkdir -p ~/.dbt
 
-      # - name: Copy profiles.yml file
-      #   run: cp src/transform/dbt_aoe/profiles.yml ~/.dbt/profiles.yml
+      - name: Write profiles.yml file
+        run: echo "$DBT_PROFILES" > ~/.dbt/profiles.yml
 
-      # - name: Run dbt
-      #   run: dbt run --target dev --profiles-dir=~/.dbt
-      - name: Look at current dir
-        run: pwd
-
-      - name: Find prof
-        run: find . -name "profiles.yml"
+      - name: Run dbt
+        run: dbt run --target dev --profiles-dir=~/.dbt
