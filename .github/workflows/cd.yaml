@@ -10,7 +10,7 @@ jobs:
     name: Full dbt-run in prod environment
     
     # Only run if the pull request was merged
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -44,6 +44,11 @@ jobs:
           cd src/transform/dbt_aoe
           dbt run --target prod
       
+      - name: Run dbt tests
+        run: |
+          cd src/transform/dbt_aoe
+          dbt test --target dev
+    
       - name: Run post-merge actions
         run: |
           echo "Pull request has been approved and merged to main"
