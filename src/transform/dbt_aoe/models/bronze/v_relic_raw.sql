@@ -8,3 +8,5 @@ SELECT DISTINCT
    ,'RELIC_LINK_API'::VARCHAR as source
 FROM
    {{ source('aoe_ext', 'relic_ext') }}
+WHERE 1=1
+{{ filter_load('2024-09-01', 'aoe') }}

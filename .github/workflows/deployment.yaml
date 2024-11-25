@@ -1,0 +1,49 @@
+name: Post-Merge Action
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  post-merge-job:
+    name: Full dbt-run in prod environment
+    # Only run if the pull request was merged
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install dbt-core dbt-snowflake 
+    
+      - name: Write profiles.yml
+        env:
+          DBT_PROFILES: ${{ secrets.DBT_PROFILES }}
+        run: echo "$DBT_PROFILES" > src/transform/dbt_aoe/profiles.yml
+
+      - name: Run dbt debug
+        run: |
+          cd src/transform/dbt_aoe
+          dbt debug
+
+      - name: Run dbt deps
+        run: |
+          cd src/transform/dbt_aoe
+          dbt deps
+
+      - name: Run dbt run
+        run: |
+          cd src/transform/dbt_aoe
+          dbt run --target prod
+      
+      - name: Run post-merge actions
+        run: |
+          echo "Pull request has been approved and merged to main"

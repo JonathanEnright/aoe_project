@@ -1,0 +1,12 @@
+your_project_name:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: YOUR_ACCOUNT
+      user: YOUR_USERNAME
+      password: YOUR_PASSWORD
+      warehouse: YOUR_WAREHOUSE
+      database: YOUR_DATABASE
+      schema: YOUR_SCHEMA
+      threads: 1
