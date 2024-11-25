@@ -68,8 +68,8 @@ jobs:
       # - name: Create dbt directory
       #   run: mkdir -p ${GITHUB_WORKSPACE}/.dbt
 
-      # - name: Write profiles.yml file
-      #   run: echo "$DBT_PROFILES" > ${GITHUB_WORKSPACE}/.dbt/profiles.yml
+      - name: Write profiles.yml file
+        run: echo "$DBT_PROFILES" > /home/runner/work/aoe_project/aoe_project/src/transform/dbt_aoe/profiles.yml
 
-      # - name: Run dbt
-      #   run: dbt run --target dev --profiles-dir=${GITHUB_WORKSPACE}/.dbt
+      - name: Run dbt
+        run: dbt run --target dev --profiles-dir=/home/runner/work/aoe_project/aoe_project/src/transform/dbt_aoe
