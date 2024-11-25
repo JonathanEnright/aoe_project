@@ -43,7 +43,7 @@ jobs:
 
   dev_dbt_deployment:
     name: Full dbt-run in dev environment
-    needs: lint_and_format 
+    needs: lint_and_test 
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
