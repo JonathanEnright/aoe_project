@@ -1,7 +1,13 @@
-{{ config(materialized='table') }}
+{{
+    config(
+        materialized='incremental',
+        unique_key='fact_pk',
+        on_schema_change='fail'
+    )
+}}
 
---change this to incremental
 
+WITH cte AS (
 SELECT
     pm.id as fact_pk
     ,dm.match_pk as match_fk
@@ -30,6 +36,10 @@ INNER JOIN
 INNER JOIN 
     {{ ref('dim_date') }} as dd
     ON dm.game_date = dd.date
+)
 
---Potential to left join on {{this}} i.e. fact table on fact_pk where fact_pk IS NULL
---This will do delta load, if dbt cannot complie the code correctly
+SELECT * FROM cte
+{% if is_incremental() %}
+    where file_date > (select max(file_date) from {{ this }})
+    or fact_pk IS NULL
+{% endif %}

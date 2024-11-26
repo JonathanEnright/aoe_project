@@ -1,7 +1,13 @@
-{{ config(materialized='table') }}
---This should be loaded as incremental
+{{
+    config(
+        materialized='incremental',
+        unique_key='game_id',
+        on_schema_change='fail'
+    )
+}}
 
 
+with cte as (
 SELECT
     game_id
     ,map
@@ -27,3 +33,9 @@ FROM
     {{ ref('matches_br') }}
 WHERE
     leaderboard = 'random_map' --filter for 1v1 RM's in this analysis
+)
+
+SELECT * FROM cte
+{% if is_incremental() %}
+    where file_date > (select max(file_date) from {{ this }})
+{% endif %}
