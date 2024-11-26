@@ -6,10 +6,6 @@ seeds:
     docs:
       show: true
       node_color: purple
-    # config:
-    #   schema: landing
-    # tests:
-    #   - <test>
     columns:
       - name: Country
         description: 'Name of country'
