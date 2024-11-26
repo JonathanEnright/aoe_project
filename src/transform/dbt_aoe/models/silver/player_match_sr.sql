@@ -1,7 +1,13 @@
-{{ config(materialized='table') }}
+{{
+    config(
+        materialized='incremental',
+        unique_key='id',
+        on_schema_change='fail'
+    )
+}}
 
---change this to incremental
    
+WITH cte as (
 SELECT
     MD5(CONCAT(game_id,'~',profile_id)) as id
     ,game_id
@@ -16,3 +22,9 @@ SELECT
     ,file_date
 FROM
     {{ ref('players_br') }}
+)
+
+SELECT * FROM cte
+{% if is_incremental() %}
+    where file_date > (select max(file_date) from {{ this }})
+{% endif %}

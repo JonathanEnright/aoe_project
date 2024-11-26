@@ -1,6 +1,5 @@
 {{ config(materialized='view') }}
 
-
 SELECT DISTINCT
    *
    ,metadata$filename AS rsrc
@@ -10,4 +9,4 @@ SELECT DISTINCT
 FROM
    {{ source('aoe_ext', 'players_ext') }}
 WHERE 1=1
-{{ filter_load('2024-09-01', 'aoe') }}
+   {{ filter_load('file_date') }}

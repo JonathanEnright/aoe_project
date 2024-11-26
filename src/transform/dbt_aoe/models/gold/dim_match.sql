@@ -1,11 +1,17 @@
-{{ config(materialized='table') }}
---This should be loaded as incremental
+{{
+    config(
+        materialized='incremental',
+        unique_key='match_pk',
+        on_schema_change='fail'
+    )
+}}
 
 
 WITH 
     deduplicated AS (
         {{ deduplicate_by_key('_ref(matches_sr)', 'CONCAT(game_id,source)', 'ldts') }}
     )
+    ,cte AS (
 SELECT
     MD5(CONCAT(game_id::TEXT,'~',source)) as match_pk
     ,game_id
@@ -26,3 +32,10 @@ SELECT
     ,file_date
 FROM
     deduplicated
+)
+
+SELECT * FROM cte
+{% if is_incremental() %}
+    where file_date > (select max(file_date) from {{ this }})
+    or match_pk is NULL
+{% endif %}

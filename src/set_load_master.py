@@ -13,17 +13,21 @@ logger = logging.getLogger(__name__)
 script_dir = Path(__file__).resolve().parent
 
 YAML_CONFIG = os.path.join(script_dir, "config.yaml")
-PROJECT = "aoe_dev"
+
+# Set up script to update only 'dev' file date ranges.
+# 'prod' runs will be bring in all data by default,
+#  unless control table manually overridden or updated here (ENV = "prod").
+ENV = "dev"
 
 
-def update_load_master(connection, project: str, from_date: str, to_date: str):
+def update_load_master(connection, env: str, from_date: str, to_date: str):
     query = f"""
     UPDATE load_master
     SET 
         load_start_date = '{from_date}'
         ,load_end_date = '{to_date}'
     WHERE
-        project_name = '{project}' 
+        environment = '{env}' 
     ;
     """
     cursor = connection.cursor()
@@ -39,7 +43,7 @@ def main(*args, **kwargs):
     run_date_to = config.run_end_date
 
     connection = sf_connect(db="aoe", schema="control")
-    update_load_master(connection, PROJECT, run_date_from, run_date_to)
+    update_load_master(connection, ENV, run_date_from, run_date_to)
     connection.close()
     logger.info("Script complete.")
 

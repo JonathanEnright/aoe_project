@@ -7,7 +7,7 @@ on:
 
 
 jobs:
-  copy-s3-data:
+  copy_s3_data:
     runs-on: ubuntu-latest
 
     steps:
@@ -41,6 +41,7 @@ jobs:
 
   prod_dbt_deployment:
     name: Full dbt-run in prod environment
+    needs: copy_s3_data     
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
