@@ -10,6 +10,10 @@ models:
         data_tests:
           - unique
           - not_null
+      - name: ldts
+        data_tests:
+          - recent_ldts:
+              'back_date_days': 7
 
   - name: statgroup_br
     description: "Schema of flattened player stats data from Relic API"
@@ -21,6 +25,10 @@ models:
           - not_null
       - name: personal_statgroup_id
         description: "Joining key to leaderboards table"
+      - name: ldts
+        data_tests:
+          - recent_ldts:
+              'back_date_days': 7
 
   - name: matches_br
     description: "Individual match data from Aoestats.io"
@@ -30,6 +38,11 @@ models:
         data_tests:
           - unique
           - not_null
+          
+      - name: ldts
+        data_tests:
+          - recent_ldts:
+              'back_date_days': 7
 
   - name: players_br
     description: "Individual player data from Aoestats.io"
@@ -38,3 +51,7 @@ models:
         description: "Joining key for the table when combined with profile_id"
       - name: profile_id
         description: "Joining key for the table when combined with game_id"
+      - name: ldts
+        data_tests:
+          - recent_ldts:
+              'back_date_days': 7
