@@ -1,5 +1,6 @@
 --DBT Tests pass if no rows are returned.
 --Hence, write the test assertion to find failing rows. 
+
 SELECT
     country_name
 FROM

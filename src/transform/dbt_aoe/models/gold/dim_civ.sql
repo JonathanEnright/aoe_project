@@ -1,5 +1,11 @@
-{{ config(materialized='table') }}
--- Either incremental, or read from silver table if that table is full history
+{{
+    config(
+        materialized='incremental',
+        unique_key='civ_pk',
+        on_schema_change='fail'
+    )
+}}
+
 
 SELECT DISTINCT
     MD5(civ) as civ_pk
