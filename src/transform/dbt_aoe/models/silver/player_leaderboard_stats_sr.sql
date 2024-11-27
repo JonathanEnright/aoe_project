@@ -1,5 +1,6 @@
 {{ config(materialized='table') }}
 
+
 WITH
     stat_group_data AS (
         SELECT

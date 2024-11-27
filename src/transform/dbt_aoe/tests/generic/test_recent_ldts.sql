@@ -1,6 +1,7 @@
 {% test recent_ldts(model, column_name, back_date_days) %}
 {{ config(severity = 'warn') }}
 
+
 WITH
     test_def as (
     SELECT

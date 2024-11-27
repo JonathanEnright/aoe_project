@@ -1,6 +1,5 @@
 {{ config(materialized='table') }}
---Full refresh each load 
---approx 45k rows
+
 
 WITH 
     deduplicated AS (

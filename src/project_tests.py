@@ -1,19 +1,15 @@
 import pytest
-from datetime import datetime, date
+from datetime import date
 import os
 import sys
-
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.append(os.path.join(project_root, "src"))
-
 import pandas as pd
 import io
 from pydantic import BaseModel
 
-# from unittest.mock import Mock, patch
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(os.path.join(project_root, "src"))
 
 from src.extract.filter import *
-
 from src.load.loader import *
 
 

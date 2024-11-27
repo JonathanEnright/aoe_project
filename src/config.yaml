@@ -4,7 +4,6 @@ backdate_days_end: 1
 target_run_date: ~
 target_run_end_date: ~
 date_format: '%Y-%m-%d'
-full_refresh_ind: 1
 
 # AoeStats
 stats_dir_url: '/media/db_dumps/date_range%3D'
@@ -13,7 +12,6 @@ players_fn_suffix: 'players'
 stats_base_url: https://aoestats.io
 matches_folder_name: dev/matches
 players_folder_name: dev/players
-
 
 metadata_endpoint: /api/db_dumps.json
 metadata_fn_suffix: metadata

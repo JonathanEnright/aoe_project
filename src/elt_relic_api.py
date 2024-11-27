@@ -1,6 +1,5 @@
 from utils import Config, timer, create_s3_session
-from extract import validate_json_schema, fetch_relic_chunk
-from extract import RelicResponse
+from extract import RelicResponse, validate_json_schema, fetch_relic_chunk
 from load import load_json_data
 import logging
 import os

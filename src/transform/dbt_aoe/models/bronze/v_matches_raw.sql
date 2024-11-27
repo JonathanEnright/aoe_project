@@ -1,5 +1,6 @@
 {{ config(materialized='view') }}
 
+
 SELECT DISTINCT
    *
    ,metadata$filename AS rsrc

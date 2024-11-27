@@ -1,10 +1,10 @@
 from utils import Config, timer, fetch_api_file, create_s3_session
 from extract import (
+    Players,
     generate_weekly_queries,
     create_stats_endpoints,
     validate_parquet_schema,
 )
-from extract import Players
 from load import load_parquet_data
 import logging
 import os

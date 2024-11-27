@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ValidationError, field_validator, model_validator
+from pydantic import BaseModel, model_validator
 from typing import List, Optional
 from datetime import date, timedelta, datetime
 import logging
@@ -83,10 +83,8 @@ class LeaderboardStat(BaseModel):
 
 
 class RelicResponse(BaseModel):
-    # result: RelicResult
     statGroups: List[StatGroup]
     leaderboardStats: List[LeaderboardStat]
-    # rankTotal: Optional[int] = None
 
 
 # -------------------------------Aoestats .parquet schemas

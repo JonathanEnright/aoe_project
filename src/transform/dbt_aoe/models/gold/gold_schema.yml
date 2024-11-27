@@ -6,34 +6,34 @@ models:
     description: "Dimension table contain the attributes for civs"
     columns:
       - name: civ_pk
-        description: "A foreign key for this table"
+        description: "A primary key for this table"
         data_tests:
           - unique
           - not_null
 
   - name: dim_date
-    description: "Dimension table contain the attributes for dates"
+    description: "Dimension table containing the attributes for dates"
     columns:
       - name: date_pk
-        description: "A foreign key for this table"
+        description: "A primary key for this table"
         data_tests:
           - unique
           - not_null
 
   - name: dim_match
-    description: "Dimension table contain the attributes for matches"
+    description: "Dimension table containing the attributes for matches"
     columns:
       - name: match_pk
-        description: "A foreign key for this table"
+        description: "A primary key for this table"
         data_tests:
           - unique
           - not_null
 
   - name: dim_player
-    description: "Dimension table contain the attributes for players"
+    description: "Dimension table containing the attributes for players"
     columns:
       - name: player_pk
-        description: "A foreign key for this table"
+        description: "A primary key for this table"
         data_tests:
           - unique
           - not_null
