@@ -101,12 +101,12 @@ jobs:
       - name: Run dbt run
         run: |
           cd src/transform/dbt_aoe
-          dbt run --target prod --models state:modified --state .
+          dbt run --target prod --models state:modified+ --state .
       
       - name: Run dbt tests
         run: |
           cd src/transform/dbt_aoe
-          dbt test --target prod
+          dbt test --target prod --models state:modified+ --state .
 
       - name: Upload updated manifest.json to S3
         run: |
