@@ -60,6 +60,22 @@ jobs:
           DBT_PROFILES: ${{ secrets.DBT_PROFILES }}
         run: echo "$DBT_PROFILES" > src/transform/dbt_aoe/profiles.yml
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Download manifest.json from S3
+        run: |
+          aws s3 cp s3://aoe2dumps/prod_artifacts/manifest.json src/transform/dbt_aoe/manifest.json
+
+      - name: Dbt list changed files
+        run: |
+          cd src/transform/dbt_aoe
+          dbt ls --models state:modified --state .
+
       - name: Run dbt debug
         run: |
           cd src/transform/dbt_aoe
@@ -78,19 +94,12 @@ jobs:
       - name: Run dbt run
         run: |
           cd src/transform/dbt_aoe
-          dbt run --target prod
+          dbt run --target prod --models state:modified --state .
       
       - name: Run dbt tests
         run: |
           cd src/transform/dbt_aoe
           dbt test --target prod
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Upload updated manifest.json to S3
         run: |
