@@ -42,7 +42,7 @@ jobs:
           pytest src/project_tests.py
 
   dev_dbt_deployment:
-    name: Full dbt-run in dev environment
+    name: Slim CI dbt-run in dev environment
     needs: lint_and_test 
     runs-on: ubuntu-latest
     steps:
