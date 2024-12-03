@@ -94,7 +94,7 @@ jobs:
 
       - name: Upload updated manifest.json to S3
         run: |
-          aws s3 cp src/transform/dbt_aoe/target/manifest.json s3://aoe2dumps/prod/manifest.json
+          aws s3 cp src/transform/dbt_aoe/target/manifest.json s3://aoe2dumps/prod_artifacts/manifest.json
     
       - name: Run post-merge actions
         run: |
