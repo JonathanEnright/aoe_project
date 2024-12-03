@@ -28,7 +28,7 @@ SELECT
     ,rsrc
     ,ldts
     ,source
-    ,file_date
+    ,file_date --test comment
 FROM
     {{ ref('matches_br') }}
 WHERE
