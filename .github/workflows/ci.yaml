@@ -62,6 +62,17 @@ jobs:
           DBT_PROFILES: ${{ secrets.DBT_PROFILES }}
         run: echo "$DBT_PROFILES" > src/transform/dbt_aoe/profiles.yml
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Download manifest.json from S3
+        run: |
+          aws s3 cp s3://aoe2dumps/dev_artifacts/manifest.json src/transform/dbt_aoe/manifest.json
+
       - name: Run dbt debug
         run: |
           cd src/transform/dbt_aoe
@@ -72,6 +83,18 @@ jobs:
           cd src/transform/dbt_aoe
           dbt deps
 
+      - name: Run dbt compile
+        run: |
+          # This creates the current manifest for the dbt project, based on merged files
+          cd src/transform/dbt_aoe
+          dbt compile
+
+      - name: Dbt list changed files
+        run: |
+          # This will list the changes between our current files, and what was last merged to prod
+          cd src/transform/dbt_aoe
+          dbt ls --models state:modified --state .
+
       - name: Refresh dbt external tables
         run: |
           cd src/transform/dbt_aoe
@@ -80,9 +103,14 @@ jobs:
       - name: Run dbt run
         run: |
           cd src/transform/dbt_aoe
-          dbt run --target dev
+          dbt run --target dev --models state:modified+ --state .
 
       - name: Run dbt tests
         run: |
           cd src/transform/dbt_aoe
-          dbt test --target dev
+          dbt test --target dev --models state:modified+ --state .
+
+      - name: Upload updated manifest.json to S3
+        run: |
+          aws s3 cp src/transform/dbt_aoe/target/manifest.json s3://aoe2dumps/dev_artifacts/manifest.json
+    
