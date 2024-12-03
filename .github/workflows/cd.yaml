@@ -40,7 +40,7 @@ jobs:
 
 
   prod_dbt_deployment:
-    name: Full dbt-run in prod environment
+    name: Slim CI dbt-run in prod environment
     needs: copy_s3_data     
     runs-on: ubuntu-latest
     steps:

@@ -32,7 +32,7 @@ WITH
         ,value:wins::int as wins
         ,rsrc
         ,ldts
-        ,source --another test
+        ,source
     FROM
         landing_data
         ,LATERAL FLATTEN(INPUT => json_col:leaderboardStats)
