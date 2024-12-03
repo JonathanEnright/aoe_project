@@ -71,11 +71,6 @@ jobs:
         run: |
           aws s3 cp s3://aoe2dumps/prod_artifacts/manifest.json src/transform/dbt_aoe/manifest.json
 
-      - name: Dbt list changed files
-        run: |
-          cd src/transform/dbt_aoe
-          dbt ls --models state:modified --state .
-
       - name: Run dbt debug
         run: |
           cd src/transform/dbt_aoe
@@ -85,6 +80,18 @@ jobs:
         run: |
           cd src/transform/dbt_aoe
           dbt deps
+
+      - name: Run dbt compile
+        run: |
+          # This creates the current manifest for the dbt project, based on merged files
+          cd src/transform/dbt_aoe
+          dbt compile
+
+      - name: Dbt list changed files
+        run: |
+          # This will list the changes between our current files, and what was last merged to prod
+          cd src/transform/dbt_aoe
+          dbt ls --models state:modified --state .
 
       - name: Refresh dbt external tables
         run: |
