@@ -42,7 +42,7 @@ The Silver layer represents the area of which we run further transformations and
 
 #### Silver Tables
 
-In this project, the data is already in a mostly usable form, so we have a light silver layer with minor transformations. We create a surrogate key on the `player_match_sr` table using a MD5 hash, to uniquely identify rows based on a single field. This makes it easier for Snowflake to perform UPSERT commands, rather than trying to use a composite key. We also ingest a simply 'seed' file (`country_list.csv`) into the table `player_leaderboard_stats_sr`, to provide the mapping between country codes and names. We add the `_sr` suffix to denote the silver tables.
+In this project, the data is already in a mostly usable form, so we have a light silver layer with minor transformations. We create a surrogate key on the `player_match_sr` table using a MD5 hash, to uniquely identify rows based on a single field. This makes it easier for Snowflake to perform UPSERT commands, rather than trying to use a composite key. We also ingest a simple 'seed' file (`country_list.csv`) into the table `player_leaderboard_stats_sr`, to provide the mapping between country codes and names. We add the `_sr` suffix to denote the silver tables.
 
 ### Data Retention
 
