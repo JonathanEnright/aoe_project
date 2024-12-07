@@ -271,3 +271,87 @@ Date-driven directory structures in S3 enable delta loading in Snowflake, proces
         - `generic`
           - `test_recent_ldts.sql`
           - `test_within_threshold.sql`
+
+
+```bash
+├── Dockerfile
+├── .env
+├── README.md
+├── requirements.txt
+├── .github
+│   └── workflows
+│       ├── ci.yaml
+│       └── cd.yaml
+├── dags
+│   ├── all_project_dag.py
+│   ├── dbt_dag.py
+│   ├── elt_metadata_dag.py
+│   ├── elt_relic_api_dag.py
+│   ├── elt_stat_matches_dag.py
+│   ├── elt_stat_players_dag.py
+│   └── set_load_master_dag.py
+├── src
+│   ├── __init__.py
+│   ├── config.yaml
+│   ├── elt_metadata.py
+│   ├── elt_relic_api.py
+│   ├── elt_stat_matches.py
+│   ├── elt_stat_players.py
+│   ├── project_tests.py
+│   ├── set_load_master.py
+│   ├── utils.py
+│   ├── extract
+│   │   ├── __init__.py
+│   │   ├── filter.py
+│   │   └── models.py
+│   ├── load
+│   │   ├── __init__.py
+│   │   └── loader.py
+│   └── transform
+│       └── dbt_aoe
+│           ├── dbt_project.yml
+│           ├── package-lock.yml
+│           ├── packages.yml
+│           ├── profiles.yml.template
+│           ├── analyses
+│           ├── dbt_packages
+│           │   └── dbt_external_tables
+│           ├── macros
+│           │   ├── deduplicate_by_key.sql
+│           │   ├── filter_load.sql
+│           │   └── generate_schema_name.sql
+│           ├── models
+│           │   ├── Medallion_README.md
+│           │   ├── bronze
+│           │   │   ├── bronze_schema.yml
+│           │   │   ├── dim_date_br.py
+│           │   │   ├── ext_table_schema.yml
+│           │   │   ├── leaderboards_br.sql
+│           │   │   ├── matches_br.sql
+│           │   │   ├── players_br.sql
+│           │   │   ├── statgroup_br.sql
+│           │   │   ├── v_matches_raw.sql
+│           │   │   ├── v_players_raw.sql
+│           │   │   └── v_relic_raw.sql
+│           │   ├── gold
+│           │   │   ├── dim_civ.sql
+│           │   │   ├── dim_date.sql
+│           │   │   ├── dim_match.sql
+│           │   │   ├── dim_player.sql
+│           │   │   ├── fact_player_matches.sql
+│           │   │   └── gold_schema.yml
+│           │   └── silver
+│           │       ├── matches_sr.sql
+│           │       ├── player_leaderboard_stats_sr.sql
+│           │       ├── player_match_sr.sql
+│           │       └── silver_schema.yml
+│           ├── seeds
+│           │   ├── country_list.csv
+│           │   └── seeds.yml
+│           ├── snapshots
+│           └── tests
+│               ├── assert_countrys_mapped.sql
+│               └── generic
+│                   ├── test_recent_ldts.sql
+│                   └── test_within_threshold.sql
+```
