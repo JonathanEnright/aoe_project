@@ -45,7 +45,7 @@ class RelicResult(BaseModel):
 
 
 class Member(BaseModel):
-    profile_id: int
+    profile_id: Optional[int | float] = None
     name: Optional[str] = None
     alias: str
     personal_statgroup_id: Optional[int] = None
@@ -96,8 +96,8 @@ class Players(BaseModel):
     match_rating_diff: float
     new_rating: int
     old_rating: int
-    profile_id: int
-    replay_summary_raw: str
+    profile_id: Optional[int | float] = None
+    replay_summary_raw: Optional[str | float] = None
     team: int
     winner: bool
 
@@ -114,7 +114,7 @@ class Matches(BaseModel):
     mirror: bool
     num_players: int
     patch: int
-    raw_match_type: int
+    raw_match_type: Optional[int | float] = None
     replay_enhanced: bool
     started_timestamp: datetime
     starting_age: str

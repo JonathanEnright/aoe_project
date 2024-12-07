@@ -22,6 +22,8 @@ SELECT
     ,file_date
 FROM
     {{ ref('players_br') }}
+WHERE
+    profile_id IS NOT NULL --0.14% null from source, assume DQ issue.
 )
 
 SELECT * FROM cte

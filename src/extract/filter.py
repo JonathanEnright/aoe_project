@@ -47,7 +47,7 @@ def validate_parquet_schema(content, validation_schema):
         try:
             validation_schema.model_validate(record)
         except ValidationError as e:
-            logger.error("Validation error:", e)
+            logger.error(f"Validation error: {e}")
 
     # Reset the pointer to start of file:
     content.seek(0)
