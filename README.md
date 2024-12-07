@@ -24,7 +24,8 @@ The Age of Empires 2 (aoe2) project dashboard provides a comprehensive summary v
 _(Insert Airflow DAG diagram of pipeline here)_
 
 ### Dimensional Model
-<img src="./README_resources/db_diagram_aoe_model" alt="Dimensional Model" width="1200"/>
+
+<img src="./README_resources/db_diagram_aoe_model.PNG" alt="Dimensional Model" width="1200"/>
 
 ## 4. Dashboard Example
 
