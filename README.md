@@ -17,13 +17,14 @@ The Age of Empires 2 (aoe2) project dashboard provides a comprehensive summary v
 ## 3. Project Structure
 
 ### High level view
-_(Insert high level Excalidraw diagram of pipeline here)_
+
+<img src="./README_resources/aoe2project_data_pipeline.PNG" alt="Data Pipeline" width="1200"/>
 
 ### Pipeline DAG
 _(Insert Airflow DAG diagram of pipeline here)_
 
 ### Dimensional Model
-_(Insert DB Diagram model here)_
+<img src="./README_resources/db_diagram_aoe_model" alt="Dimensional Model" width="1200"/>
 
 ## 4. Dashboard Example
 
