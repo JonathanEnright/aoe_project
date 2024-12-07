@@ -22,7 +22,7 @@ SELECT
    ,value:patch::VARCHAR AS patch
    ,value:raw_match_type::VARCHAR AS raw_match_type
    ,value:replay_enhanced::BOOLEAN AS replay_enhanced
-   ,value:started_timestamp::INT AS started_timestamp
+   ,value:started_timestamp::VARCHAR::TIMESTAMP_NTZ AS started_timestamp
    ,value:starting_age::VARCHAR AS starting_age
    ,value:team_0_elo::DEC(38,2) AS team_0_elo
    ,value:team_1_elo::DEC(38,2) AS team_1_elo
