@@ -26,3 +26,4 @@ airflow.cfg
 profiles.yml
 .pytest_cache
 .astro
+tree.py
