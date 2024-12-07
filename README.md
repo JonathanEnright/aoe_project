@@ -1,8 +1,8 @@
-# Age of Empires 2 Dashboard
+# Age of Empires 2 Project
 
 ## 1. Overview
 
-The Age of Empires 2 (aoe2) dashboard provides a comprehensive summary view of player and match statistics from the video game 'Age of Empires 2 DE'.  Data is automatically pulled and refreshed weekly in a PowerBI report, enabling in-depth analysis and data slicing/dicing.  The dashboard aims to answer questions such as:
+The Age of Empires 2 (aoe2) project dashboard provides a comprehensive summary view of player and match statistics from the video game 'Age of Empires 2 DE'.  Data is automatically pulled and refreshed weekly in a PowerBI report, enabling in-depth analysis and data slicing/dicing.  The dashboard aims to answer questions such as:
 
 * Who are the top performing players currently?
 * What civilization should I counter-pick to maximize my chances of beating my opponent?
