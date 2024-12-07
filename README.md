@@ -20,8 +20,13 @@ The Age of Empires 2 (aoe2) project dashboard provides a comprehensive summary v
 
 <img src="./README_resources/aoe2project_data_pipeline.PNG" alt="Data Pipeline" width="1200"/>
 
-### Pipeline DAG
-_(Insert Airflow DAG diagram of pipeline here)_
+### Pipeline DAG - project all
+
+<img src="./README_resources/project_all_dag.PNG" alt="Airflow project DAG" width="1200"/>
+
+### Pipeline DAG - dbt models
+
+<img src="./README_resources/dbt_dag_airflow.PNG" alt="Airflow dbt DAG" width="1200"/>
 
 ### Dimensional Model
 
