@@ -24,7 +24,7 @@ with DAG(
     "elt_stat_matches_id",
     default_args=default_args,
     description="ETL process for stat_matches",
-    schedule_interval=timedelta(days=1),
+    schedule_interval=timedelta(days=7),
     start_date=datetime(2023, 1, 1),
     catchup=False,
     tags=["etl", "stats"],
