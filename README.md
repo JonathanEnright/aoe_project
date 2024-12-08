@@ -34,8 +34,17 @@ The Age of Empires 2 (aoe2) project dashboard provides a comprehensive summary v
 
 ## 4. Dashboard Example
 
-_(Display 2 screenshots of PowerBI dashboard insights here)_
+### Leaderboard
 
+<img src="./README_resources/aoe_leaderboard.PNG" alt="Player Leaderboard" width="1200"/>
+
+### Counter-Civ picker
+
+<img src="./README_resources/aoe_counter_pick.PNG" alt="Civ Counter Picker" width="1200"/>
+
+### Civ Performance over time
+
+<img src="./README_resources/aoe_civ_performance.PNG" alt="Civ Performance" width="1200"/>
 
 ## 5. Tools
 
